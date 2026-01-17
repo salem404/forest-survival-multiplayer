@@ -1,0 +1,28 @@
+# Godot 
+.godot/
+.import/
+/android/
+exports/
+.tmp
+
+# Imported translations (automatically generated from CSV files)
+*.translation
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_crash.*.json
+
+# OS-specific ignores
+# Windows
+Thumbs.db
+# macOS
+.DS_Store
+# Linux
+*~
+
+# Jetbrains IDE files
+.idea/
+
+# Visual Studio Code files
+.vscode/

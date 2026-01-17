@@ -1,0 +1,27 @@
+[gd_resource type="Theme" format=3 uid="uid://dgoeryiljvo4p"]
+
+[ext_resource type="StyleBox" uid="uid://becf5ct4lurpe" path="res://themes/tab_selected.tres" id="1_rjgu6"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_vu6l5"]
+color = Color(1, 1, 1, 1)
+grow_begin = 14.0
+grow_end = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gsqoc"]
+content_margin_top = 5.0
+
+[resource]
+BoxContainer/constants/separation = 10
+FlowContainer/constants/h_separation = 10
+FlowContainer/constants/v_separation = 10
+HBoxContainer/constants/separation = 10
+HSeparator/styles/separator = SubResource("StyleBoxLine_vu6l5")
+MarginContainer/constants/margin_bottom = 14
+MarginContainer/constants/margin_left = 14
+MarginContainer/constants/margin_right = 14
+MarginContainer/constants/margin_top = 14
+TabContainer/constants/side_margin = 0
+TabContainer/constants/tab_separation = 4
+TabContainer/styles/panel = SubResource("StyleBoxEmpty_gsqoc")
+TabContainer/styles/tab_selected = ExtResource("1_rjgu6")
+TabContainer/styles/tabbar_background = null
