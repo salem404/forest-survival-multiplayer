@@ -1,6 +1,6 @@
 extends Lobby
 
-const MAX_CONNECTIONS = 4
+const MAX_CONNECTIONS = Lobby.MAX_PLAYERS
 
 var is_host: bool = false
 var lobby_id: int

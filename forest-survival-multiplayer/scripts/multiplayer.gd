@@ -16,6 +16,8 @@ extends Control
 @onready var invitebutton = %InviteButton
 @onready var player_color_picker = %PlayerColor
 
+var lobby_full_recent: bool = false
+
 
 func _ready() -> void:
 	if not game_scene:
@@ -36,6 +38,7 @@ func _ready() -> void:
 		SteamLobby.server_created.connect(_on_server_created)
 		SteamLobby.server_disconnected.connect(_on_server_disconnected)
 		SteamLobby.connection_failed.connect(_on_connection_failed)
+		SteamLobby.lobby_full.connect(_on_lobby_full)
 
 		### debug only
 		playername.text = Steam.getFriendPersonaName(Steam.getSteamID())
@@ -46,6 +49,7 @@ func _ready() -> void:
 		LANLobby.player_disconnected.connect(_on_player_disconnected)
 		LANLobby.server_disconnected.connect(_on_server_disconnected)
 		LANLobby.connection_failed.connect(_on_connection_failed)
+		LANLobby.lobby_full.connect(_on_lobby_full)
 
 		portinput.text = str(LANLobby.DEFAULT_PORT)
 		ipinput.text = LANLobby.DEFAULT_SERVER_IP
@@ -62,6 +66,8 @@ func _input(event):
 func _on_player_connected(id, player_info):
 	if not player_info_list:
 		return
+	lobby_full_recent = false
+	_set_player_custom_enabled(false)
 	var info_list = player_info_list.instantiate()
 	info_list.id = id
 	info_list.player_info = player_info
@@ -75,12 +81,40 @@ func _on_player_disconnected(id):
 			break
 
 
+func _clear_player_list():
+	for child in player_list.get_children():
+		child.queue_free()
+
+
 func _on_connection_failed():
+	lobby_full_recent = false
 	statuslabel.text = "Status: Connection failed"
+	_clear_player_list()
+	_set_player_custom_enabled(true)
+	disable_buttons(false)
+
+
+func _on_lobby_full():
+	lobby_full_recent = true
+	statuslabel.text = "Status: Lobby is full"
+	_clear_player_list()
+	_set_player_custom_enabled(true)
 	disable_buttons(false)
 
 
 func _on_back_to_menu_button_pressed() -> void:
+	var lobby: Lobby
+	if connection_type == "Steam":
+		lobby = SteamLobby
+	else:
+		lobby = LANLobby
+	if lobby.has_active_peer():
+		lobby.remove_multiplayer_peer()
+	_clear_player_list()
+	_set_player_custom_enabled(true)
+	statuslabel.text = "Status: Ready"
+	disable_buttons(false)
+	startgamebutton.visible = false
 	$".".hide()
 
 
@@ -99,15 +133,34 @@ func _on_player_color_color_changed(_color: Color) -> void:
 func _on_server_button_pressed() -> void:
 	if not _required_data():
 		return
+	var lobby: Lobby
+	if connection_type == "Steam":
+		lobby = SteamLobby
+	else:
+		lobby = LANLobby
+	if lobby.has_active_peer():
+		statuslabel.text = "Status: Already connected"
+		return
 
 	if connection_type == "Steam":
 		SteamLobby.create_game()
+		disable_buttons(true)
+		startgamebutton.visible = true
 	else:
 		var port = portinput.text.to_int() if portinput.text else LANLobby.DEFAULT_PORT
-		LANLobby.create_game(port)
+		var result = LANLobby.create_game(port)
+		if result != OK:
+			match result:
+				ERR_ALREADY_IN_USE:
+					statuslabel.text = "Status: Port %d already in use" % port
+				_:
+					statuslabel.text = "Status: Failed to create server"
+			disable_buttons(false)
+			startgamebutton.visible = false
+			return
 		statuslabel.text = "Status: Server created on port %d" % port
-	disable_buttons(true)
-	startgamebutton.visible = true
+		disable_buttons(true)
+		startgamebutton.visible = true
 
 func _on_server_created():
 	lobbyinput.text = str(SteamLobby.lobby_id)
@@ -137,7 +190,11 @@ func _on_join_requested(_lobby_id: int, _friend_id: int) -> void:
 
 func _on_start_game_button_pressed() -> void:
 	if game_scene:
-		var lobby = SteamLobby if connection_type == "Steam" else LANLobby
+		var lobby: Lobby
+		if connection_type == "Steam":
+			lobby = SteamLobby
+		else:
+			lobby = LANLobby
 		# Check if we have multiple players connected
 		if lobby.players.size() < 2:
 			statuslabel.text = "Status: Waiting for all players to connect"
@@ -163,6 +220,20 @@ func disable_buttons(status = false):
 
 
 func _on_server_disconnected():
+	var lobby: Lobby
+	if connection_type == "Steam":
+		lobby = SteamLobby
+	else:
+		lobby = LANLobby
+	if lobby.has_active_peer():
+		lobby.remove_multiplayer_peer()
+	if lobby_full_recent:
+		lobby_full_recent = false
+		statuslabel.text = "Status: Lobby is full"
+		disable_buttons(false)
+		_set_player_custom_enabled(true)
+		_clear_player_list()
+		return
 	%GameManager.swap_scene_to_file("res://scenes/main_menu.tscn")
 
 
@@ -181,6 +252,11 @@ func _required_data() -> bool:
 			LANLobby.player_info["name"] = playername.text
 			LANLobby.player_info["color"] = player_color_picker.color
 	return result
+
+
+func _set_player_custom_enabled(enabled: bool) -> void:
+	playername.editable = enabled
+	player_color_picker.disabled = not enabled
 
 
 func _on_overlay_button_pressed() -> void:

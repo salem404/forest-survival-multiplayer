@@ -7,6 +7,9 @@ signal connection_failed
 signal server_created
 signal server_disconnected
 signal game_start(scene_path)
+signal lobby_full
+
+const MAX_PLAYERS = 4
 
 var players = { }
 
@@ -55,6 +58,9 @@ func _on_player_connected(id):
 		_game_has_started.rpc_id(id)
 		return
 	if multiplayer.is_server():
+		if players.size() >= MAX_PLAYERS:
+			_reject_peer(id)
+			return
 		_register_player.rpc_id(id, 1, player_info)
 		for peer_id in players:
 			if peer_id != 1:
@@ -63,6 +69,9 @@ func _on_player_connected(id):
 
 @rpc("any_peer", "call_local", "reliable")
 func _register_player(new_player_id: int, new_player_info):
+	if multiplayer.is_server() and not players.has(new_player_id) and players.size() >= MAX_PLAYERS:
+		_reject_peer(new_player_id)
+		return
 	if players.has(new_player_id):
 		players[new_player_id] = new_player_info
 		return
@@ -106,6 +115,24 @@ func _on_server_disconnected():
 func remove_multiplayer_peer():
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	players.clear()
+
+
+func has_active_peer() -> bool:
+	return (
+		multiplayer.multiplayer_peer != null
+		and not (multiplayer.multiplayer_peer is OfflineMultiplayerPeer)
+	)
+
+
+func _reject_peer(id: int) -> void:
+	_lobby_full_message.rpc_id(id)
+	await get_tree().create_timer(0.2).timeout
+	multiplayer.disconnect_peer(id)
+
+
+@rpc("call_remote", "reliable")
+func _lobby_full_message() -> void:
+	lobby_full.emit()
 
 
 func debug_log(text: String):

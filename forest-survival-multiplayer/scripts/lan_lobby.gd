@@ -2,7 +2,7 @@ extends Lobby
 
 const DEFAULT_PORT = 6666
 const DEFAULT_SERVER_IP = "127.0.0.1" # IPv4 localhost
-const MAX_CONNECTIONS = 4
+const MAX_CONNECTIONS = Lobby.MAX_PLAYERS
 
 var is_host: bool = false
 
@@ -32,6 +32,7 @@ func create_game(port = 0):
 	players[1] = player_info
 	player_connected.emit(1, player_info)
 	debug_log("LAN game created on port %d" % port)
+	return OK
 
 
 func join_game(address = "", port = 0):
