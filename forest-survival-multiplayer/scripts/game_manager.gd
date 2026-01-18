@@ -16,5 +16,7 @@ func _ready():
 
 func swap_scene_to_file(replacement_scene_path: String) -> void:
 	var scene = load(replacement_scene_path).instantiate()
-	%MainMenu.queue_free()
+	var main_menu = find_child("MainMenu", true, false)
+	if main_menu:
+		main_menu.queue_free()
 	add_child(scene)

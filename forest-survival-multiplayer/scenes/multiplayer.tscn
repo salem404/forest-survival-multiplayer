@@ -85,10 +85,9 @@ layout_mode = 2
 layout_mode = 2
 theme_override_styles/tab_selected = ExtResource("1_b0l6s")
 tab_alignment = 1
-current_tab = 1
+current_tab = 0
 
 [node name="LAN" type="HBoxContainer" parent="Panel/PanelMargin/VBoxContainer/ServerMode" unique_id=334571081]
-visible = false
 layout_mode = 2
 alignment = 1
 metadata/_tab_index = 0
@@ -132,6 +131,7 @@ max_length = 4
 expand_to_text_length = true
 
 [node name="Steam" type="VBoxContainer" parent="Panel/PanelMargin/VBoxContainer/ServerMode" unique_id=899541089]
+visible = false
 layout_mode = 2
 alignment = 1
 metadata/_tab_index = 1

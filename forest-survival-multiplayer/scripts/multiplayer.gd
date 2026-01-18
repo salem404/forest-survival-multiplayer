@@ -20,6 +20,8 @@ extends Control
 func _ready() -> void:
 	if not game_scene:
 		game_scene = load("res://scenes/game.tscn")
+	if not player_info_list:
+		player_info_list = load("res://scenes/player_info_list.tscn")
 	
 	var game_manager = get_tree().root.find_child("GameManager", true, false)
 	
@@ -92,7 +94,9 @@ func _on_server_button_pressed() -> void:
 	if connection_type == "Steam":
 		SteamLobby.create_game()
 	else:
-		LANLobby.create_game()
+		var port = portinput.text.to_int() if portinput.text else LANLobby.DEFAULT_PORT
+		LANLobby.create_game(port)
+		statuslabel.text = "Status: Server created on port %d" % port
 	disable_buttons(true)
 	startgamebutton.visible = true
 
@@ -107,7 +111,10 @@ func _on_client_button_pressed() -> void:
 	if connection_type == "Steam":
 		SteamLobby.join_game(lobbyinput.text.to_int())
 	else:
-		LANLobby.join_game(ipinput.text, portinput.text.to_int())
+		var address = ipinput.text if ipinput.text else LANLobby.DEFAULT_SERVER_IP
+		var port = portinput.text.to_int() if portinput.text else LANLobby.DEFAULT_PORT
+		LANLobby.join_game(address, port)
+		statuslabel.text = "Status: Connecting to %s:%d" % [address, port]
 	disable_buttons(true)
 
 
@@ -121,7 +128,10 @@ func _on_join_requested(_lobby_id: int, _friend_id: int) -> void:
 
 func _on_start_game_button_pressed() -> void:
 	if game_scene:
-		LANLobby.start_game(game_scene.resource_path)
+		if connection_type == "Steam":
+			SteamLobby.start_game(game_scene.resource_path)
+		else:
+			LANLobby.start_game(game_scene.resource_path)
 	else:
 		statuslabel.text = "Status: Game scene not set"
 
@@ -150,8 +160,12 @@ func _required_data() -> bool:
 		result = false
 	if result:
 		statuslabel.text += "Waiting "
-		LANLobby.player_info["name"] = playername.text
-		LANLobby.player_info["color"] = player_color_picker.color
+		if connection_type == "Steam":
+			SteamLobby.player_info["name"] = playername.text
+			SteamLobby.player_info["color"] = player_color_picker.color
+		else:
+			LANLobby.player_info["name"] = playername.text
+			LANLobby.player_info["color"] = player_color_picker.color
 	return result
 
 

@@ -40,8 +40,6 @@ func _on_lobby_created(_result: int, _lobby_id: int):
 		multiplayer.multiplayer_peer = steam_peer
 		players[1] = player_info
 		player_connected.emit(1, player_info)
-		#Lobby.debug_log("game created")
-		game_start.connect(_on_game_started)
 		server_created.emit()
 	else:
 		debug_log("Connection error: %d" % _result)

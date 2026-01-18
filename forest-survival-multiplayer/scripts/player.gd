@@ -38,15 +38,34 @@ func _physics_process(_delta: float) -> void:
 	if player_alive:
 		var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		velocity = direction * SPEED
-		if direction != Vector2.ZERO:
+		var is_moving = direction != Vector2.ZERO
+		var flip_h = direction.x > 0 if is_moving else $AnimatedSprite2D.flip_h
+		
+		if is_moving:
 			$AnimatedSprite2D.play()
 			$AnimatedSprite2D.animation = "default"
-			$AnimatedSprite2D.flip_h = direction.x > 0
+			$AnimatedSprite2D.flip_h = flip_h
 		else:
 			$AnimatedSprite2D.animation = "default" # "idle"
 			$AnimatedSprite2D.play()
+		
+		# Synchronize position, animation and direction to other clients
+		sync_movement.rpc(global_position, is_moving, flip_h)
 
 	move_and_slide()
+
+
+@rpc("any_peer", "call_local", "unreliable")
+func sync_movement(_position: Vector2, _is_moving: bool, _flip_h: bool):
+	global_position = _position
+	
+	if _is_moving:
+		$AnimatedSprite2D.play()
+		$AnimatedSprite2D.animation = "default"
+		$AnimatedSprite2D.flip_h = _flip_h
+	else:
+		$AnimatedSprite2D.animation = "default"
+		$AnimatedSprite2D.play()
 
 
 @rpc("any_peer", "call_local", "reliable")

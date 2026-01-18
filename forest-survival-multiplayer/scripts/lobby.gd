@@ -24,16 +24,22 @@ var game_started: bool = false
 var game_scene
 
 
-func _on_game_started(_game_scene):
-	game_scene = _game_scene
-	if players.size() > 1:
-		load_game.rpc(_game_scene)
-	else:
-		load_game(_game_scene)
-
-
 func start_game(_game_scene):
-	game_start.emit(_game_scene)
+	if multiplayer.is_server():
+		game_scene = _game_scene
+		_start_game.rpc(_game_scene)
+		# Also handle locally on server
+		var game_manager = get_tree().root.find_child("GameManager", true, false)
+		if game_manager:
+			game_manager.swap_scene_to_file("res://scenes/game.tscn")
+
+
+@rpc("authority", "reliable")
+func _start_game(_game_scene: String):
+	game_scene = _game_scene
+	var game_manager = get_tree().root.find_child("GameManager", true, false)
+	if game_manager:
+		game_manager.swap_scene_to_file("res://scenes/game.tscn")
 
 
 # When the server decides to start the game from a UI scene,
@@ -62,6 +68,11 @@ func _on_player_connected(id):
 		_game_has_started.rpc_id(id)
 		return
 	_register_player.rpc_id(id, player_info)
+	# Server also sends all existing players to the newly connected peer (except the server's own info which was already sent)
+	if multiplayer.is_server():
+		for peer_id in players:
+			if peer_id != 1:  # Skip server's own info (peer_id 1)
+				_register_player.rpc_id(id, players[peer_id])
 
 
 @rpc("any_peer", "reliable")

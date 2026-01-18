@@ -4,6 +4,8 @@ const DEFAULT_PORT = 6666
 const DEFAULT_SERVER_IP = "127.0.0.1" # IPv4 localhost
 const MAX_CONNECTIONS = 4
 
+var is_host: bool = false
+
 
 func init():
 	if not initialized:
@@ -21,13 +23,15 @@ func create_game(port = 0):
 	var peer = ENetMultiplayerPeer.new()
 	var error = peer.create_server(port, MAX_CONNECTIONS)
 	if error:
+		debug_log("Failed to create server: %s" % error)
+		connection_failed.emit()
 		return error
 	multiplayer.multiplayer_peer = peer
+	is_host = true
 
 	players[1] = player_info
 	player_connected.emit(1, player_info)
-	#Lobby.debug_log("game created")
-	game_start.connect(_on_game_started)
+	debug_log("LAN game created on port %d" % port)
 
 
 func join_game(address = "", port = 0):
@@ -38,5 +42,8 @@ func join_game(address = "", port = 0):
 	var peer = ENetMultiplayerPeer.new()
 	var result = peer.create_client(address, port)
 	if result:
+		debug_log("Failed to join game at %s:%d - Error: %s" % [address, port, result])
+		connection_failed.emit()
 		return result
 	multiplayer.multiplayer_peer = peer
+	debug_log("Joining LAN game at %s:%d" % [address, port])

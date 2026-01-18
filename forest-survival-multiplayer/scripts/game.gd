@@ -7,9 +7,10 @@ const PLAYER_SCENE = preload("res://scenes/player.tscn")
 
 
 func _ready() -> void:
-	if %GameManager and %GameManager.is_online:
-		%GameManager.current_lobby.server_disconnected.connect(_on_server_disconnected)
-		%GameManager.current_lobby.player_disconnected.connect(_on_player_disconnected)
+	var game_manager = get_tree().root.find_child("GameManager", true, false)
+	if game_manager and game_manager.is_online:
+		game_manager.current_lobby.server_disconnected.connect(_on_server_disconnected)
+		game_manager.current_lobby.player_disconnected.connect(_on_player_disconnected)
 		call_deferred("start_game_server")
 	else:
 		# Singleplayer mode - spawn a single player
@@ -21,23 +22,28 @@ func _input(event):
 		get_tree().quit()
 
 
-# Called only on the server.
+# Called on all peers to spawn players.
 func start_game_server():
-	if multiplayer.is_server():
-		var i = 0
-		for id in %GameManager.current_lobby.players:
-			var player_info = %GameManager.current_lobby.players[id]
-			var player = PLAYER_SCENE.instantiate()
-			player.name = str(id)
-			player.index = i
-			player.player_color = player_info.get("color", Color.WHITE)
-			var spawn_position = spawners[i % 4].global_position
-			player.global_position = spawn_position
-			players_nodes.add_child(player)
-			i += 1
-	else:
-		%GameManager.current_lobby.player_loaded.rpc_id(1)
-	# Tell the server that this peer has loaded.
+	# All peers spawn players based on lobby data
+	var game_manager = get_tree().root.find_child("GameManager", true, false)
+	if not game_manager:
+		return
+	
+	var i = 0
+	for id in game_manager.current_lobby.players:
+		var player_info = game_manager.current_lobby.players[id]
+		var player = PLAYER_SCENE.instantiate()
+		player.name = str(id)
+		player.index = i
+		player.player_color = player_info.get("color", Color.WHITE)
+		var spawn_position = spawners[i % 4].global_position
+		player.global_position = spawn_position
+		players_nodes.add_child(player)
+		i += 1
+	
+	# Tell the server that this peer has loaded
+	if not multiplayer.is_server():
+		game_manager.current_lobby.player_loaded.rpc_id(1)
 
 
 func spawn_singleplayer_player():
@@ -57,7 +63,9 @@ func spawn_singleplayer_player():
 
 
 func _on_server_disconnected():
-	%GameManager.swap_scene_to_file("res://scenes/main_menu.tscn")
+	var game_manager = get_tree().root.find_child("GameManager", true, false)
+	if game_manager:
+		game_manager.swap_scene_to_file("res://scenes/main_menu.tscn")
 
 
 func _on_player_disconnected(id: int):
