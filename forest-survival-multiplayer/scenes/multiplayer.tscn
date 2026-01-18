@@ -1,62 +1,70 @@
 [gd_scene format=3 uid="uid://o518pwdppmil"]
 
 [ext_resource type="StyleBox" uid="uid://becf5ct4lurpe" path="res://themes/tab_selected.tres" id="1_b0l6s"]
-[ext_resource type="PackedScene" uid="uid://y6k1dkhxyaxr" path="res://scenes/avatar_slot.tscn" id="1_crvko"]
+[ext_resource type="Script" uid="uid://cg1b57f1e4fhw" path="res://scripts/multiplayer.gd" id="1_pjkx2"]
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_crvko"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_pjkx2"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_4vwpp"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_36d77"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_uvo4r"]
-
-[node name="Multiplayer" type="PanelContainer" unique_id=1323987310]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -200.0
-offset_right = 250.0
-offset_bottom = 230.0
+[node name="Multiplayer" type="Control" unique_id=1622268342]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_pjkx2")
 
-[node name="PanelMargin" type="MarginContainer" parent="." unique_id=1896035635]
-custom_minimum_size = Vector2(500, 400)
+[node name="ColorRect" type="ColorRect" parent="." unique_id=497518735]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=275633602]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -397.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PanelMargin" type="MarginContainer" parent="Panel" unique_id=1896035635]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelMargin" unique_id=1698361900]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/PanelMargin" unique_id=1698361900]
 layout_mode = 2
+alignment = 1
 
-[node name="Label" type="Label" parent="PanelMargin/VBoxContainer" unique_id=605798567]
+[node name="Label" type="Label" parent="Panel/PanelMargin/VBoxContainer" unique_id=605798567]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Multiplayer Lobby"
 horizontal_alignment = 1
 
-[node name="VSeparator" type="HSeparator" parent="PanelMargin/VBoxContainer" unique_id=237718992]
+[node name="VSeparator" type="HSeparator" parent="Panel/PanelMargin/VBoxContainer" unique_id=237718992]
 layout_mode = 2
 
-[node name="PlayerCustom" type="VBoxContainer" parent="PanelMargin/VBoxContainer" unique_id=1716334545]
+[node name="PlayerCustom" type="VBoxContainer" parent="Panel/PanelMargin/VBoxContainer" unique_id=1716334545]
 layout_mode = 2
 
-[node name="PlayerNameContainer" type="HBoxContainer" parent="PanelMargin/VBoxContainer/PlayerCustom" unique_id=888653271]
+[node name="PlayerNameContainer" type="HBoxContainer" parent="Panel/PanelMargin/VBoxContainer/PlayerCustom" unique_id=888653271]
 layout_mode = 2
 alignment = 1
 
-[node name="PlayerNameLabel" type="Label" parent="PanelMargin/VBoxContainer/PlayerCustom/PlayerNameContainer" unique_id=231396333]
+[node name="PlayerNameLabel" type="Label" parent="Panel/PanelMargin/VBoxContainer/PlayerCustom/PlayerNameContainer" unique_id=231396333]
 layout_mode = 2
 size_flags_vertical = 5
 text = "PlayerName"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="PlayerNameInput" type="LineEdit" parent="PanelMargin/VBoxContainer/PlayerCustom/PlayerNameContainer" unique_id=192258510]
+[node name="PlayerNameInput" type="LineEdit" parent="Panel/PanelMargin/VBoxContainer/PlayerCustom/PlayerNameContainer" unique_id=192258510]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -64,137 +72,163 @@ placeholder_text = "Enter your name"
 alignment = 1
 max_length = 200
 
-[node name="AvatarContainer" type="HBoxContainer" parent="PanelMargin/VBoxContainer/PlayerCustom" unique_id=405868486]
+[node name="PlayerColor" type="ColorPickerButton" parent="Panel/PanelMargin/VBoxContainer/PlayerCustom/PlayerNameContainer" unique_id=654223723]
+unique_name_in_owner = true
 layout_mode = 2
-alignment = 1
+text = "#ffffff"
+color = Color(1, 1, 1, 1)
 
-[node name="AvatarSlot" parent="PanelMargin/VBoxContainer/PlayerCustom/AvatarContainer" unique_id=1182591992 instance=ExtResource("1_crvko")]
-layout_mode = 2
-button_group = SubResource("ButtonGroup_crvko")
-
-[node name="AvatarSlot2" parent="PanelMargin/VBoxContainer/PlayerCustom/AvatarContainer" unique_id=1490657048 instance=ExtResource("1_crvko")]
-layout_mode = 2
-button_group = SubResource("ButtonGroup_pjkx2")
-
-[node name="AvatarSlot3" parent="PanelMargin/VBoxContainer/PlayerCustom/AvatarContainer" unique_id=1215571860 instance=ExtResource("1_crvko")]
-layout_mode = 2
-button_group = SubResource("ButtonGroup_4vwpp")
-
-[node name="AvatarSlot4" parent="PanelMargin/VBoxContainer/PlayerCustom/AvatarContainer" unique_id=2077893747 instance=ExtResource("1_crvko")]
-layout_mode = 2
-button_group = SubResource("ButtonGroup_36d77")
-
-[node name="AvatarSlot5" parent="PanelMargin/VBoxContainer/PlayerCustom/AvatarContainer" unique_id=510978128 instance=ExtResource("1_crvko")]
-layout_mode = 2
-button_group = SubResource("ButtonGroup_uvo4r")
-
-[node name="VSeparator2" type="HSeparator" parent="PanelMargin/VBoxContainer" unique_id=347705330]
+[node name="VSeparator2" type="HSeparator" parent="Panel/PanelMargin/VBoxContainer" unique_id=347705330]
 layout_mode = 2
 
-[node name="ServerMode" type="TabContainer" parent="PanelMargin/VBoxContainer" unique_id=761353113]
+[node name="ServerMode" type="TabContainer" parent="Panel/PanelMargin/VBoxContainer" unique_id=761353113]
 layout_mode = 2
 theme_override_styles/tab_selected = ExtResource("1_b0l6s")
 tab_alignment = 1
-current_tab = 0
+current_tab = 1
 
-[node name="LAN" type="HBoxContainer" parent="PanelMargin/VBoxContainer/ServerMode" unique_id=334571081]
+[node name="LAN" type="HBoxContainer" parent="Panel/PanelMargin/VBoxContainer/ServerMode" unique_id=334571081]
+visible = false
 layout_mode = 2
 alignment = 1
 metadata/_tab_index = 0
 
-[node name="IP" type="HBoxContainer" parent="PanelMargin/VBoxContainer/ServerMode/LAN" unique_id=94884941]
+[node name="IP" type="HBoxContainer" parent="Panel/PanelMargin/VBoxContainer/ServerMode/LAN" unique_id=94884941]
 layout_mode = 2
 alignment = 1
 
-[node name="IPLabel" type="Label" parent="PanelMargin/VBoxContainer/ServerMode/LAN/IP" unique_id=1562432877]
+[node name="IPLabel" type="Label" parent="Panel/PanelMargin/VBoxContainer/ServerMode/LAN/IP" unique_id=1562432877]
 layout_mode = 2
 size_flags_vertical = 5
 text = "IP"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="IPInput" type="LineEdit" parent="PanelMargin/VBoxContainer/ServerMode/LAN/IP" unique_id=767408245]
+[node name="IPInput" type="LineEdit" parent="Panel/PanelMargin/VBoxContainer/ServerMode/LAN/IP" unique_id=767408245]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "127.0.0.1"
 alignment = 1
 
-[node name="Port" type="BoxContainer" parent="PanelMargin/VBoxContainer/ServerMode/LAN" unique_id=1348715598]
+[node name="Port" type="BoxContainer" parent="Panel/PanelMargin/VBoxContainer/ServerMode/LAN" unique_id=1348715598]
 layout_mode = 2
 alignment = 1
 
-[node name="Label3" type="Label" parent="PanelMargin/VBoxContainer/ServerMode/LAN/Port" unique_id=852527431]
+[node name="Label3" type="Label" parent="Panel/PanelMargin/VBoxContainer/ServerMode/LAN/Port" unique_id=852527431]
 layout_mode = 2
 size_flags_vertical = 5
 text = "Port"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="PortInput" type="LineEdit" parent="PanelMargin/VBoxContainer/ServerMode/LAN/Port" unique_id=703536602]
+[node name="PortInput" type="LineEdit" parent="Panel/PanelMargin/VBoxContainer/ServerMode/LAN/Port" unique_id=703536602]
+unique_name_in_owner = true
 layout_mode = 2
 text = "7000"
 alignment = 1
 max_length = 4
 expand_to_text_length = true
 
-[node name="Steam" type="VBoxContainer" parent="PanelMargin/VBoxContainer/ServerMode" unique_id=899541089]
-visible = false
+[node name="Steam" type="VBoxContainer" parent="Panel/PanelMargin/VBoxContainer/ServerMode" unique_id=899541089]
 layout_mode = 2
 alignment = 1
 metadata/_tab_index = 1
 
-[node name="Lobby" type="HBoxContainer" parent="PanelMargin/VBoxContainer/ServerMode/Steam" unique_id=454734429]
+[node name="Lobby" type="HBoxContainer" parent="Panel/PanelMargin/VBoxContainer/ServerMode/Steam" unique_id=454734429]
 layout_mode = 2
 
-[node name="LobbyLabel" type="Label" parent="PanelMargin/VBoxContainer/ServerMode/Steam/Lobby" unique_id=751735348]
+[node name="LobbyLabel" type="Label" parent="Panel/PanelMargin/VBoxContainer/ServerMode/Steam/Lobby" unique_id=751735348]
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Lobby ID"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="LobbyInput" type="LineEdit" parent="PanelMargin/VBoxContainer/ServerMode/Steam/Lobby" unique_id=714548379]
+[node name="LobbyInput" type="LineEdit" parent="Panel/PanelMargin/VBoxContainer/ServerMode/Steam/Lobby" unique_id=714548379]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Server lobby ID"
 alignment = 1
 
-[node name="ButtonsContainer2" type="HBoxContainer" parent="PanelMargin/VBoxContainer/ServerMode/Steam" unique_id=1013210125]
+[node name="SteambuttonsContainer" type="HBoxContainer" parent="Panel/PanelMargin/VBoxContainer/ServerMode/Steam" unique_id=1013210125]
 layout_mode = 2
 
-[node name="OverlayButton" type="Button" parent="PanelMargin/VBoxContainer/ServerMode/Steam/ButtonsContainer2" unique_id=1460969308]
+[node name="OverlayButton" type="Button" parent="Panel/PanelMargin/VBoxContainer/ServerMode/Steam/SteambuttonsContainer" unique_id=1460969308]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Steam Overlay"
 
-[node name="InviteButton" type="Button" parent="PanelMargin/VBoxContainer/ServerMode/Steam/ButtonsContainer2" unique_id=75210694]
+[node name="InviteButton" type="Button" parent="Panel/PanelMargin/VBoxContainer/ServerMode/Steam/SteambuttonsContainer" unique_id=75210694]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 disabled = true
 text = "Invite Friend"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelMargin/VBoxContainer" unique_id=921604325]
+[node name="VSeparator3" type="HSeparator" parent="Panel/PanelMargin/VBoxContainer" unique_id=767131020]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Panel/PanelMargin/VBoxContainer" unique_id=921604325]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 2
 
-[node name="VSeparator3" type="HSeparator" parent="PanelMargin/VBoxContainer/VBoxContainer2" unique_id=767131020]
+[node name="PlayerList" type="VBoxContainer" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2" unique_id=717013335]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="PanelMargin/VBoxContainer/VBoxContainer2" unique_id=935074992]
+[node name="PlayersLabel" type="Label" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2/PlayerList" unique_id=1060356375]
+layout_mode = 2
+text = "Connected Players:"
+
+[node name="StatusLabel" type="Label" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2" unique_id=1990075972]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Status: Ready"
+
+[node name="VSeparator4" type="HSeparator" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2" unique_id=472635066]
 layout_mode = 2
 
-[node name="ServerButton" type="Button" parent="PanelMargin/VBoxContainer/VBoxContainer2/ButtonsContainer" unique_id=2024569029]
+[node name="ButtonsContainer" type="HBoxContainer" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2" unique_id=935074992]
+layout_mode = 2
+
+[node name="ServerButton" type="Button" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2/ButtonsContainer" unique_id=2024569029]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Start Server"
 
-[node name="ClientButton" type="Button" parent="PanelMargin/VBoxContainer/VBoxContainer2/ButtonsContainer" unique_id=1778508712]
+[node name="ClientButton" type="Button" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2/ButtonsContainer" unique_id=1778508712]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Connect to Server"
 
-[node name="StartGameButton" type="Button" parent="PanelMargin/VBoxContainer/VBoxContainer2" unique_id=1547245171]
+[node name="StartGameButton" type="Button" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2" unique_id=1547245171]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 text = "Start Game"
+
+[node name="BackToMenuButton" type="Button" parent="." unique_id=279871915]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+text = "X"
+
+[connection signal="color_changed" from="Panel/PanelMargin/VBoxContainer/PlayerCustom/PlayerNameContainer/PlayerColor" to="." method="_on_player_color_color_changed"]
+[connection signal="tab_selected" from="Panel/PanelMargin/VBoxContainer/ServerMode" to="." method="_on_server_mode_tab_selected"]
+[connection signal="pressed" from="Panel/PanelMargin/VBoxContainer/ServerMode/Steam/SteambuttonsContainer/OverlayButton" to="." method="_on_overlay_button_pressed"]
+[connection signal="pressed" from="Panel/PanelMargin/VBoxContainer/ServerMode/Steam/SteambuttonsContainer/InviteButton" to="." method="_on_invite_button_pressed"]
+[connection signal="pressed" from="Panel/PanelMargin/VBoxContainer/VBoxContainer2/ButtonsContainer/ServerButton" to="." method="_on_server_button_pressed"]
+[connection signal="pressed" from="Panel/PanelMargin/VBoxContainer/VBoxContainer2/ButtonsContainer/ClientButton" to="." method="_on_client_button_pressed"]
+[connection signal="pressed" from="Panel/PanelMargin/VBoxContainer/VBoxContainer2/StartGameButton" to="." method="_on_start_game_button_pressed"]
+[connection signal="pressed" from="BackToMenuButton" to="." method="_on_back_to_menu_button_pressed"]

@@ -1,8 +1,0 @@
-[gd_scene format=3 uid="uid://bf16b0wbm2otf"]
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_mewig"]
-
-[node name="Avatar" type="Node2D" unique_id=793961690]
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1516949119]
-sprite_frames = SubResource("SpriteFrames_mewig")

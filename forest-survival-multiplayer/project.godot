@@ -15,6 +15,11 @@ run/main_scene="uid://dg8pe380kdjit"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+LANLobby="*uid://c6jk2obda1g3y"
+SteamLobby="*uid://qnwwq27ah2o2"
+
 [gui]
 
 theme/custom="uid://dgoeryiljvo4p"

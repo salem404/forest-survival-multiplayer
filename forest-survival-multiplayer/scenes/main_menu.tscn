@@ -44,9 +44,8 @@ layout_mode = 2
 text = "Multiplayer"
 
 [node name="Multiplayer" parent="." unique_id=1323987310 instance=ExtResource("1_l6cm7")]
+visible = false
 layout_mode = 1
-offset_top = -215.0
-offset_bottom = 215.0
 
 [connection signal="pressed" from="Container/Container/SingleplayerButton" to="." method="_on_singleplayer_button_pressed"]
 [connection signal="pressed" from="Container/Container/MultiplayerButton" to="." method="_on_multiplayer_button_pressed"]

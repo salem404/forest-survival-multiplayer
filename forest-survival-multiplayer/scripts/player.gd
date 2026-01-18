@@ -11,6 +11,7 @@ var collision_masks: Array[int] = [238, 221, 187, 119]
 @export var index: int
 @export var player_alive: bool = true
 @export var current_life: float
+@export var player_color: Color = Color.WHITE
 
 
 func _enter_tree() -> void:
@@ -23,6 +24,9 @@ func _ready() -> void:
 	if is_multiplayer_authority():
 		collision_layer = player_layers[index]
 		collision_mask = collision_masks[index]
+
+	# Apply color modulation to the sprite
+	$AnimatedSprite2D.self_modulate = player_color
 
 	# Hide nickname label if only 1 player
 	call_deferred("_check_player_count")
@@ -50,6 +54,12 @@ func set_index(_index):
 	index = _index
 	collision_layer = player_layers[index]
 	collision_mask = collision_masks[index]
+
+
+@rpc("any_peer", "call_local", "reliable")
+func set_player_color(_color: Color):
+	player_color = _color
+	$AnimatedSprite2D.self_modulate = player_color
 
 
 func _check_player_count() -> void:

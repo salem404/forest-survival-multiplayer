@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://d0kmwqtivhwtc"]
+
+[ext_resource type="SpriteFrames" uid="uid://vi38ou2cpjet" path="res://psudoconejo_frames.tres" id="1_8pyhx"]
+[ext_resource type="Script" uid="uid://dwd5lcbap10ec" path="res://scripts/player_info_list.gd" id="1_hynfv"]
+
+[node name="PlayerInfoList" type="HBoxContainer" unique_id=676074094]
+script = ExtResource("1_hynfv")
+
+[node name="Label" type="Label" parent="." unique_id=585248456]
+visible = false
+layout_mode = 2
+text = "1"
+
+[node name="ReferenceRect" type="ReferenceRect" parent="." unique_id=1632721730]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+border_color = Color(0, 0, 0, 1)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ReferenceRect" unique_id=708004599]
+position = Vector2(16, 16)
+scale = Vector2(0.5, 0.5)
+sprite_frames = ExtResource("1_8pyhx")
+frame = 7
+
+[node name="Label2" type="Label" parent="." unique_id=408914152]
+layout_mode = 2
+text = "Server"

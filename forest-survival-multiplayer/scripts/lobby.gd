@@ -16,7 +16,7 @@ var players = { }
 # before the connection is made. It will be passed to every other peer.
 # For example, the value of "name" can be set to something the player
 # entered in a UI scene.
-var player_info = { "name": "Player 1", "avatar": "p1", "avatar_id": "p1" }
+var player_info = { "name": "Player 1", "color": Color.WHITE }
 
 var initialized: bool = false
 var players_loaded = 1
@@ -40,7 +40,9 @@ func start_game(_game_scene):
 # do Lobby.load_game.rpc(filepath)
 @rpc("call_remote", "reliable")
 func load_game(_game_scene: String):
-	get_tree().change_scene_to_file(_game_scene)
+	var game_manager = get_tree().root.find_child("GameManager", true, false)
+	if game_manager:
+		game_manager.swap_scene_to_file("res://scenes/game.tscn")
 
 
 # Every peer will call this when they have loaded the game scene.

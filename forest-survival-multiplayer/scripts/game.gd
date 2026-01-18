@@ -1,5 +1,6 @@
 extends Node2D
 
+const PLAYER_SCENE = preload("res://scenes/player.tscn")
 @export var spawners: Array[MultiplayerSpawner]
 
 @onready var players_nodes = $Players
@@ -25,7 +26,14 @@ func start_game_server():
 	if multiplayer.is_server():
 		var i = 0
 		for id in %GameManager.current_lobby.players:
-			spawners[i % 4].spawn_player(id, i)
+			var player_info = %GameManager.current_lobby.players[id]
+			var player = PLAYER_SCENE.instantiate()
+			player.name = str(id)
+			player.index = i
+			player.player_color = player_info.get("color", Color.WHITE)
+			var spawn_position = spawners[i % 4].global_position
+			player.global_position = spawn_position
+			players_nodes.add_child(player)
 			i += 1
 	else:
 		%GameManager.current_lobby.player_loaded.rpc_id(1)
@@ -34,9 +42,8 @@ func start_game_server():
 
 func spawn_singleplayer_player():
 	# For singleplayer, directly instantiate the player scene
-	var player_scene = load("res://scenes/player.tscn")
-	if player_scene:
-		var player = player_scene.instantiate()
+	var player = PLAYER_SCENE.instantiate()
+	if player:
 		player.name = "1"  # Set ID to 1
 		player.index = 0   # First player slot
 		# For singleplayer, set collision to detect the tilemap physics
