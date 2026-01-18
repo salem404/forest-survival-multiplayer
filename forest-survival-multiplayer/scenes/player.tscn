@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://0bpf380s2ohk" path="res://scripts/player.gd" id="1_g2els"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3vyb7"]
+size = Vector2(27, 9)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("1_3vyb7")
@@ -73,7 +74,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 5.0
+"speed": 10.0
 }]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3v2ag"]
@@ -89,18 +90,16 @@ properties/2/replication_mode = 1
 
 [node name="Player" type="CharacterBody2D" unique_id=2102833124]
 script = ExtResource("1_g2els")
-index = null
-player_alive = null
-current_life = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=302938748]
+position = Vector2(-0.5, 8.5)
 shape = SubResource("RectangleShape2D_3vyb7")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1400634564]
-position = Vector2(0, 2)
+position = Vector2(0, -5)
 sprite_frames = SubResource("SpriteFrames_d2wvv")
 autoplay = "default"
-frame_progress = 0.7309871
+frame_progress = 0.52171975
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=362642920]
 replication_config = SubResource("SceneReplicationConfig_3v2ag")
@@ -111,3 +110,6 @@ offset_top = -47.0
 offset_right = 25.0
 offset_bottom = -24.0
 text = "Server"
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2122704753]
+zoom = Vector2(2, 2)
