@@ -1,0 +1,327 @@
+name: Release to GitHub & Itch.io
+
+on:
+  workflow_dispatch: # Manual trigger only
+    inputs:
+      bump_type:
+        description: "Version bump type"
+        required: false
+        default: "auto"
+        type: choice
+        options:
+          - auto
+          - none
+          - major
+          - minor
+          - patch
+      rebuild:
+        description: "🔨 Rebuild from scratch (defaults to true)"
+        required: false
+        default: true
+        type: boolean
+  workflow_run:
+    workflows: [Test Builds]
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PROJECT_PATH: forest-survival-multiplayer
+
+jobs:
+  Confirm-Release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    outputs:
+      should-release: ${{ steps.confirm.outputs.should-release }}
+    steps:
+      - name: ✅ Tests Passed - Release Ready
+        id: confirm
+        shell: bash
+        run: |
+          echo "## 🧪 Tests Passed Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Release will proceed automatically. The **Release** job will now:" >> $GITHUB_STEP_SUMMARY
+          echo "- Bump version (patch for fixes, minor for features, major for breaking changes)" >> $GITHUB_STEP_SUMMARY
+          echo "- Export builds for all platforms" >> $GITHUB_STEP_SUMMARY
+          echo "- Publish to GitHub Releases" >> $GITHUB_STEP_SUMMARY
+          echo "- Push to Itch.io" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Monitor the **Release** and **Publish** jobs below for progress." >> $GITHUB_STEP_SUMMARY
+          echo "should-release=true" >> $GITHUB_OUTPUT
+
+  Detect-Platforms:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.detect.outputs.matrix }}
+      has-platforms: ${{ steps.detect.outputs.has-platforms }}
+      godot-version: ${{ steps.detect.outputs.godot-version }}
+      game-name: ${{ steps.detect.outputs.game-name }}
+      project-path: ${{ steps.detect.outputs.project-path }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect Project + Export Presets
+        id: detect
+        uses: ./.github/actions/detect-godot-config
+        with:
+          project-path-default: ${{ env.PROJECT_PATH }}
+  Export:
+    needs: [Detect-Platforms]
+    if: |
+      needs.Detect-Platforms.outputs.has-platforms == 'true' && 
+      (github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'))
+    runs-on: ubuntu-latest
+    name: Export (${{ matrix.platform }})
+    strategy:
+      matrix: ${{ fromJson(needs.Detect-Platforms.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Godot
+        uses: ./.github/actions/godot-setup
+        with:
+          godot-version: ${{ needs.Detect-Platforms.outputs.godot-version }}
+
+      - name: Export ${{ matrix.platform }}
+        uses: ./.github/actions/godot-export
+        with:
+          project-path: ${{ needs.Detect-Platforms.outputs.project-path }}
+          preset: ${{ matrix.preset }}
+          export-dir: exports/${{ matrix.folder }}
+          export-file: ${{ matrix.file }}
+          platform: ${{ matrix.platform }}
+
+      - name: Upload ${{ matrix.platform }} Export
+        uses: actions/upload-artifact@v4
+        with:
+          name: export-${{ matrix.platform }}
+          path: exports/${{ matrix.folder }}
+
+  Release:
+    needs: [Detect-Platforms, Export]
+    if: |
+      always() && (needs.Export.result == 'success' || needs.Export.result == 'skipped') && 
+      (github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'))
+    runs-on: ubuntu-latest
+    outputs:
+      release-tag: ${{ steps.existing_tag.outputs.new_tag || steps.new_tag.outputs.new_tag }}
+      game-name: ${{ needs.Detect-Platforms.outputs.game-name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full history for changelog
+
+      - name: Get Existing Tag (if no bump)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.bump_type == 'none'
+        id: existing_tag
+        shell: bash
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Using existing tag: $LATEST_TAG"
+          echo "new_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "changelog=Release for $LATEST_TAG (no version bump)" >> $GITHUB_OUTPUT
+
+      - name: Create New Version Tag
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.bump_type != 'none' || github.event_name == 'workflow_run'
+        id: new_tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: ${{ github.event.inputs.bump_type == 'auto' && 'false' || github.event.inputs.bump_type }}
+          release_branches: main
+
+      - name: Verify Tag
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.bump_type != 'none' && !steps.new_tag.outputs.new_tag
+        run: |
+          echo "❌ ERROR: No version tag was created!"
+          echo ""
+          echo "This can happen if:"
+          echo "1. No commits follow conventional commit format (feat:, fix:, etc.)"
+          echo "2. You selected 'auto' but no bump was detected"
+          echo ""
+          echo "Please either:"
+          echo "- Use conventional commits in your commit messages, OR"
+          echo "- Select a specific bump type (major, minor, patch), OR"
+          echo "- Select 'none' to use the existing version tag"
+          exit 1
+
+      - name: Download Exports (from test run)
+        if: github.event.inputs.rebuild != 'true'
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: test.yml
+          branch: main
+          name_is_regexp: true
+          name: export-.*
+          path: exports
+          check_artifacts: true
+          search_artifacts: true
+        continue-on-error: true
+
+      - name: Verify Downloaded Artifacts
+        if: github.event.inputs.rebuild != 'true'
+        id: check_artifacts
+        run: |
+          echo "Checking for downloaded artifacts..."
+          if [ -z "$(ls -A exports 2>/dev/null)" ]; then
+            echo "⚠️ No test artifacts found from recent test runs"
+            echo "artifacts_found=false" >> $GITHUB_OUTPUT
+          else
+            echo "✅ Using builds from test run"
+            ls -R exports/
+            echo "artifacts_found=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download Exports (freshly built)
+        if: github.event.inputs.rebuild == 'true' || failure()
+        uses: actions/download-artifact@v4
+        with:
+          pattern: export-*
+          path: exports
+          merge-multiple: false
+
+      - name: Create Platform Zips
+        uses: ./.github/actions/create-release-zips
+        with:
+          tag: ${{ steps.existing_tag.outputs.new_tag || steps.new_tag.outputs.new_tag }}
+          game-name: ${{ needs.Detect-Platforms.outputs.game-name }}
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.existing_tag.outputs.new_tag || steps.new_tag.outputs.new_tag }}
+          name: Release ${{ steps.existing_tag.outputs.new_tag || steps.new_tag.outputs.new_tag }}
+          body: ${{ steps.existing_tag.outputs.changelog || steps.new_tag.outputs.changelog }}
+          files: |
+            ${{ needs.Detect-Platforms.outputs.game-name }}-*-${{ steps.existing_tag.outputs.new_tag || steps.new_tag.outputs.new_tag }}.zip
+          draft: false
+          prerelease: false
+
+  Publish:
+    needs: Release
+    if: needs.Release.outputs.release-tag
+    runs-on: ubuntu-latest
+    name: Publish to Itch.io (${{ matrix.platform }})
+    strategy:
+      matrix:
+        include:
+          - platform: windows
+            folder: windows
+          - platform: linux
+            folder: linux
+          - platform: macos
+            folder: macos
+          - platform: web
+            folder: web
+      fail-fast: false
+    steps:
+      - name: Download ${{ matrix.platform }} Export (from test run)
+        if: github.event.inputs.rebuild != 'true'
+        id: download-test
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: test.yml
+          branch: main
+          name: export-${{ matrix.platform }}
+          path: exports/${{ matrix.folder }}
+          check_artifacts: true
+          search_artifacts: true
+        continue-on-error: true
+
+      - name: Download ${{ matrix.platform }} Export (freshly built)
+        if: (github.event.inputs.rebuild == 'true' || steps.download-test.outcome == 'failure') && github.event.inputs.rebuild != 'false'
+        uses: actions/download-artifact@v4
+        with:
+          name: export-${{ matrix.platform }}
+          path: exports/${{ matrix.folder }}
+
+      - name: Publish ${{ matrix.platform }} Build to Itch.io
+        id: publish
+        uses: ./.github/actions/itch-publish
+        with:
+          folder: exports/${{ matrix.folder }}
+          platform: ${{ matrix.platform }}
+          version-tag: ${{ needs.Release.outputs.release-tag }}
+          itch-user: ${{ vars.ITCH_USER }}
+          itch-game: ${{ vars.ITCH_GAME }}
+          butler-api-key: ${{ secrets.BUTLER_API_KEY }}
+
+      - name: Publish Summary
+        shell: bash
+        run: |
+          if [ "${{ steps.publish.outputs.skipped }}" = "true" ]; then
+            echo "- ⚠️ ${{ matrix.platform }} skipped (no export)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ✅ ${{ matrix.platform }} published" >> $GITHUB_STEP_SUMMARY
+          fi
+  Notify:
+    needs: [Export, Release, Publish]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release Summary
+        shell: bash
+        env:
+          ITCH_USER: ${{ vars.ITCH_USER }}
+          ITCH_GAME: ${{ vars.ITCH_GAME }}
+        run: |
+          echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.Release.result }}" == "success" ]; then
+            echo "### ✅ Release Created Successfully!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Version:** \`${{ needs.Release.outputs.release-tag }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "**Bump Type:** ${{ github.event.inputs.bump_type }}" >> $GITHUB_STEP_SUMMARY
+            
+            if [ "${{ github.event.inputs.rebuild }}" == "true" ]; then
+              echo "**Build:** 🔨 Freshly rebuilt from source" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "**Build:** ♻️ Reused from test run (verified builds)" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### 📦 Published Platforms" >> $GITHUB_STEP_SUMMARY
+            
+            if [ "${{ needs.Publish.result }}" == "success" ]; then
+              echo "- ✅ Windows" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Linux" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ macOS" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Web" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "### 🎮 Play Now" >> $GITHUB_STEP_SUMMARY
+              echo "- **GitHub Release:** [Download builds](https://github.com/${{ github.repository }}/releases/tag/${{ needs.Release.outputs.release-tag }})" >> $GITHUB_STEP_SUMMARY
+              echo "- **Itch.io:** https://${ITCH_USER}.itch.io/${ITCH_GAME}" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "⚠️ GitHub release created but itch.io publishing failed" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "### ❌ Release Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Export Status:** ${{ needs.Export.result }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Release Status:** ${{ needs.Release.result }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Publish Status:** ${{ needs.Publish.result }}" >> $GITHUB_STEP_SUMMARY
+          fi
+  Cleanup:
+    needs: [Export, Release, Publish, Notify]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: geekyeggo/delete-artifact@v5
+        with:
+          name: |
+            export-*

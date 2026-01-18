@@ -1,0 +1,77 @@
+name: Itch Publish
+description: Publish an export to Itch.io using Butler
+inputs:
+  folder:
+    description: Export folder to publish
+    required: true
+  platform:
+    description: Platform channel name
+    required: true
+  version-tag:
+    description: Release tag (e.g. v1.2.3)
+    required: true
+  itch-user:
+    description: Itch.io username
+    required: true
+  itch-game:
+    description: Itch.io game name
+    required: true
+  butler-api-key:
+    description: Butler API key
+    required: true
+outputs:
+  skipped:
+    description: Whether publish was skipped due to missing export
+    value: ${{ steps.verify.outputs.skipped }}
+runs:
+  using: composite
+  steps:
+    - name: Verify Export Folder
+      id: verify
+      shell: bash
+      run: |
+        if [ ! -d "${{ inputs.folder }}" ] || [ -z "$(ls -A "${{ inputs.folder }}")" ]; then
+          echo "⚠️ No export found at ${{ inputs.folder }}. Skipping publish."
+          echo "skipped=true" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        echo "✅ Export verified at ${{ inputs.folder }}"
+        ls -la "${{ inputs.folder }}/"
+        echo "skipped=false" >> $GITHUB_OUTPUT
+
+    - name: Cache Butler
+      if: steps.verify.outputs.skipped != 'true'
+      uses: actions/cache@v4
+      id: cache-butler
+      with:
+        path: butler
+        key: butler-latest
+
+    - name: Download + Setup Butler
+      if: steps.verify.outputs.skipped != 'true' && steps.cache-butler.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        echo "Downloading Butler..."
+        curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+        unzip butler.zip
+        chmod +x butler
+        ./butler -V
+
+    - name: Login To Butler
+      if: steps.verify.outputs.skipped != 'true'
+      shell: bash
+      env:
+        BUTLER_API_KEY: ${{ inputs.butler-api-key }}
+      run: ./butler login
+
+    - name: Push Build to Itch.io
+      if: steps.verify.outputs.skipped != 'true'
+      shell: bash
+      env:
+        BUTLER_API_KEY: ${{ inputs.butler-api-key }}
+      run: |
+        VERSION="${{ inputs.version-tag }}"
+        VERSION_NUMBER="${VERSION#v}"
+        echo "Using version: $VERSION_NUMBER (from tag: $VERSION)"
+        ./butler push "${{ inputs.folder }}" "${{ inputs.itch-user }}/${{ inputs.itch-game }}:${{ inputs.platform }}" --userversion "$VERSION_NUMBER"
+        echo "✅ ${{ inputs.platform }} build pushed successfully"

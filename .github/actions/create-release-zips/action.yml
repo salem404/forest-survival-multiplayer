@@ -1,0 +1,52 @@
+name: Create Release Zips
+description: Create ZIP files for exported builds
+inputs:
+  tag:
+    description: Release tag (e.g. v1.2.3)
+    required: true
+  game-name:
+    description: Normalized game name
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Create Platform Zips
+      shell: bash
+      run: |
+        echo "Creating ZIP files for release..."
+
+        TAG="${{ inputs.tag }}"
+        GAME="${{ inputs.game-name }}"
+
+        # Debug: Show directory structure
+        echo "Directory structure:"
+        ls -R exports/
+        echo ""
+
+        # Create ZIPs for downloadable platforms (not web)
+        # When merge-multiple is false, artifacts are in exports/export-{platform}/*
+        if [ -d exports/export-windows ]; then
+          cd exports/export-windows
+          zip -r ../../${GAME}-windows-${TAG}.zip .
+          cd ../..
+          echo "✅ Windows ZIP created"
+        fi
+
+        if [ -d exports/export-linux ]; then
+          cd exports/export-linux
+          zip -r ../../${GAME}-linux-${TAG}.zip .
+          cd ../..
+          echo "✅ Linux ZIP created"
+        fi
+
+        if [ -d exports/export-macos ]; then
+          cd exports/export-macos
+          zip -r ../../${GAME}-macos-${TAG}.zip .
+          cd ../..
+          echo "✅ macOS ZIP created"
+        fi
+
+        # List created files
+        echo ""
+        echo "Release files:"
+        ls -lh *.zip 2>/dev/null || echo "⚠️ No ZIP files created"
