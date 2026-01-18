@@ -104,7 +104,7 @@ frame_progress = 0.52171975
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=362642920]
 replication_config = SubResource("SceneReplicationConfig_3v2ag")
 
-[node name="Nickname" type="Label" parent="." unique_id=605167716]
+[node name="NicknameLabel" type="Label" parent="." unique_id=605167716]
 offset_left = -25.0
 offset_top = -47.0
 offset_right = 25.0

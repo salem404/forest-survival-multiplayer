@@ -23,12 +23,14 @@ func _ready() -> void:
 	if is_multiplayer_authority():
 		collision_layer = player_layers[index]
 		collision_mask = collision_masks[index]
-		$Nickname.text = "a"
+
+	# Hide nickname label if only 1 player
+	call_deferred("_check_player_count")
 
 
 func _physics_process(_delta: float) -> void:
-	#if not is_multiplayer_authority():
-	#	return
+	if not is_multiplayer_authority():
+		return
 	if player_alive:
 		var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		velocity = direction * SPEED
@@ -48,3 +50,11 @@ func set_index(_index):
 	index = _index
 	collision_layer = player_layers[index]
 	collision_mask = collision_masks[index]
+
+
+func _check_player_count() -> void:
+	# In singleplayer, there's only 1 peer (self)
+	# In multiplayer, there are multiple peers
+	var peer_count = multiplayer.get_peers().size() + 1 # +1 for self
+	if peer_count == 1:
+		$NicknameLabel.hide()

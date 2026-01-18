@@ -1,7 +1,11 @@
 extends Control
 
 const CONFIG_FILE_PATH: String = "user://game_settings.cfg"
+
+@export var is_online: bool = false
+
 var config: ConfigFile = ConfigFile.new()
+var current_lobby: Lobby
 
 
 func _ready():
