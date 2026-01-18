@@ -24,6 +24,20 @@ tile_set = ExtResource("2_yqjtg")
 position = Vector2(291, 323)
 texture = ExtResource("3_lnu2h")
 
+[node name="Spawners" type="Node2D" parent="." unique_id=1572448197]
+
+[node name="Multiplayer1" type="MultiplayerSpawner" parent="Spawners" unique_id=2113128879]
+spawn_path = NodePath("../../Players/Player1")
+
+[node name="Multiplayer2" type="MultiplayerSpawner" parent="Spawners" unique_id=202135847]
+spawn_path = NodePath("../../Players/Player2")
+
+[node name="Multiplayer3" type="MultiplayerSpawner" parent="Spawners" unique_id=840812629]
+spawn_path = NodePath(".")
+
+[node name="Multiplayer4" type="MultiplayerSpawner" parent="Spawners" unique_id=143438464]
+spawn_path = NodePath(".")
+
 [node name="Players" type="Node2D" parent="." unique_id=912274652]
 
 [node name="Player1" type="Node2D" parent="Players" unique_id=1926495089]

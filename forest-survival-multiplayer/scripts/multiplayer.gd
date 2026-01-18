@@ -83,7 +83,7 @@ func _on_server_mode_tab_selected(tab: int) -> void:
 			connection_type = "Steam"
 
 
-func _on_player_color_color_changed(color: Color) -> void:
+func _on_player_color_color_changed(_color: Color) -> void:
 	pass # Replace with function body.
 
 
@@ -128,6 +128,11 @@ func _on_join_requested(_lobby_id: int, _friend_id: int) -> void:
 
 func _on_start_game_button_pressed() -> void:
 	if game_scene:
+		var lobby = SteamLobby if connection_type == "Steam" else LANLobby
+		# Check if we have multiple players connected
+		if lobby.players.size() < 2:
+			statuslabel.text = "Status: Waiting for all players to connect"
+			return
 		if connection_type == "Steam":
 			SteamLobby.start_game(game_scene.resource_path)
 		else:

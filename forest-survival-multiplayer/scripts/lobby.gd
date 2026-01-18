@@ -8,14 +8,8 @@ signal server_created
 signal server_disconnected
 signal game_start(scene_path)
 
-# This will contain player info for every player,
-# with the keys being each player's unique IDs.
 var players = { }
 
-# This is the local player info. This should be modified locally
-# before the connection is made. It will be passed to every other peer.
-# For example, the value of "name" can be set to something the player
-# entered in a UI scene.
 var player_info = { "name": "Player 1", "color": Color.WHITE }
 
 var initialized: bool = false
@@ -26,15 +20,12 @@ var game_scene
 
 func start_game(_game_scene):
 	if multiplayer.is_server():
+		debug_log("Starting game with %d players" % players.size())
 		game_scene = _game_scene
 		_start_game.rpc(_game_scene)
-		# Also handle locally on server
-		var game_manager = get_tree().root.find_child("GameManager", true, false)
-		if game_manager:
-			game_manager.swap_scene_to_file("res://scenes/game.tscn")
 
 
-@rpc("authority", "reliable")
+@rpc("authority", "call_local", "reliable")
 func _start_game(_game_scene: String):
 	game_scene = _game_scene
 	var game_manager = get_tree().root.find_child("GameManager", true, false)
@@ -51,27 +42,22 @@ func load_game(_game_scene: String):
 		game_manager.swap_scene_to_file("res://scenes/game.tscn")
 
 
-# Every peer will call this when they have loaded the game scene.
 @rpc("any_peer", "call_local", "reliable")
 func player_loaded():
 	if multiplayer.is_server():
 		players_loaded += 1
 		if players_loaded == players.size():
 			game_started = true
-			load_game(game_scene)
 
 
-# When a peer connects, send them my player info.
-# This allows transfer of all desired data for each player, not only the unique ID.
 func _on_player_connected(id):
 	if game_started:
 		_game_has_started.rpc_id(id)
 		return
 	_register_player.rpc_id(id, player_info)
-	# Server also sends all existing players to the newly connected peer (except the server's own info which was already sent)
 	if multiplayer.is_server():
 		for peer_id in players:
-			if peer_id != 1:  # Skip server's own info (peer_id 1)
+			if peer_id != 1:
 				_register_player.rpc_id(id, players[peer_id])
 
 
@@ -89,7 +75,6 @@ func _game_has_started():
 
 
 func _on_player_disconnected(id):
-	debug_log("player disconnected %d" % id)
 	players.erase(id)
 	player_disconnected.emit(id)
 
