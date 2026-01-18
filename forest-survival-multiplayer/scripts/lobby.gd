@@ -54,18 +54,24 @@ func _on_player_connected(id):
 	if game_started:
 		_game_has_started.rpc_id(id)
 		return
-	_register_player.rpc_id(id, player_info)
 	if multiplayer.is_server():
+		_register_player.rpc_id(id, 1, player_info)
 		for peer_id in players:
 			if peer_id != 1:
-				_register_player.rpc_id(id, players[peer_id])
+				_register_player.rpc_id(id, peer_id, players[peer_id])
 
 
-@rpc("any_peer", "reliable")
-func _register_player(new_player_info):
-	var new_player_id = multiplayer.get_remote_sender_id()
+@rpc("any_peer", "call_local", "reliable")
+func _register_player(new_player_id: int, new_player_info):
+	if players.has(new_player_id):
+		players[new_player_id] = new_player_info
+		return
 	players[new_player_id] = new_player_info
 	player_connected.emit(new_player_id, new_player_info)
+	if multiplayer.is_server():
+		for peer_id in players:
+			if peer_id != new_player_id:
+				_register_player.rpc_id(peer_id, new_player_id, new_player_info)
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -83,6 +89,8 @@ func _on_connected_ok():
 	var peer_id = multiplayer.get_unique_id()
 	players[peer_id] = player_info
 	player_connected.emit(peer_id, player_info)
+	if not multiplayer.is_server():
+		_register_player.rpc_id(1, peer_id, player_info)
 
 
 func _on_connected_fail():

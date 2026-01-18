@@ -32,6 +32,7 @@ func _ready() -> void:
 		Steam.join_requested.connect(_on_join_requested)
 		# events from lobby
 		SteamLobby.player_connected.connect(_on_player_connected)
+		SteamLobby.player_disconnected.connect(_on_player_disconnected)
 		SteamLobby.server_created.connect(_on_server_created)
 		SteamLobby.server_disconnected.connect(_on_server_disconnected)
 		SteamLobby.connection_failed.connect(_on_connection_failed)
@@ -42,6 +43,7 @@ func _ready() -> void:
 		LANLobby.init()
 		game_manager.current_lobby = LANLobby
 		LANLobby.player_connected.connect(_on_player_connected)
+		LANLobby.player_disconnected.connect(_on_player_disconnected)
 		LANLobby.server_disconnected.connect(_on_server_disconnected)
 		LANLobby.connection_failed.connect(_on_connection_failed)
 
@@ -64,6 +66,13 @@ func _on_player_connected(id, player_info):
 	info_list.id = id
 	info_list.player_info = player_info
 	player_list.add_child(info_list)
+
+
+func _on_player_disconnected(id):
+	for child in player_list.get_children():
+		if child.has_method("get") and child.get("id") == id:
+			child.queue_free()
+			break
 
 
 func _on_connection_failed():
