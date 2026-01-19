@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://dwd5lcbap10ec" path="res://scripts/player_info_list.gd" id="1_hynfv"]
 
 [node name="PlayerInfoList" type="HBoxContainer" unique_id=676074094]
+theme_override_constants/separation = 3
+alignment = 1
 script = ExtResource("1_hynfv")
 
 [node name="Label" type="Label" parent="." unique_id=585248456]
@@ -12,16 +14,19 @@ layout_mode = 2
 text = "1"
 
 [node name="ReferenceRect" type="ReferenceRect" parent="." unique_id=1632721730]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
 border_color = Color(0, 0, 0, 1)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ReferenceRect" unique_id=708004599]
-position = Vector2(16, 16)
-scale = Vector2(0.5, 0.5)
+position = Vector2(4, 5)
+scale = Vector2(0.205, 0.205)
 sprite_frames = ExtResource("1_8pyhx")
 frame = 7
 
 [node name="Label2" type="Label" parent="." unique_id=408914152]
 layout_mode = 2
-text = "Server"
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "12345678901111"
+vertical_alignment = 1

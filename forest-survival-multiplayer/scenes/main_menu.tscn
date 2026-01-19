@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://crlkhki0sk2fv" path="res://scripts/main_menu.gd" id="1_ekxnf"]
 [ext_resource type="PackedScene" uid="uid://o518pwdppmil" path="res://scenes/multiplayer.tscn" id="1_l6cm7"]
+[ext_resource type="FontFile" uid="uid://es3p5onc2wk1" path="res://themes/dank-depths-0.1.0/Dank-Depths.ttf" id="2_bqqt6"]
 
 [node name="MainMenu" type="Control" unique_id=495659329]
 layout_mode = 3
@@ -12,34 +13,36 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ekxnf")
 
-[node name="Container" type="CenterContainer" parent="." unique_id=2131470001]
+[node name="Container2" type="VBoxContainer" parent="." unique_id=1221608352]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 13
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -52.5
-offset_right = 200.0
-offset_bottom = 52.5
+anchor_bottom = 1.0
+offset_left = -31.0
+offset_right = 31.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 8
+alignment = 1
 
-[node name="Container" type="VBoxContainer" parent="Container" unique_id=1221608352]
-custom_minimum_size = Vector2(400, 0)
+[node name="Label" type="Label" parent="Container2" unique_id=1625723403]
 layout_mode = 2
-
-[node name="Label" type="Label" parent="Container/Container" unique_id=1625723403]
-layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bqqt6")
+theme_override_font_sizes/font_size = 16
 text = "Title"
 horizontal_alignment = 1
+uppercase = true
 
-[node name="SingleplayerButton" type="Button" parent="Container/Container" unique_id=1711817553]
+[node name="HSeparator" type="HSeparator" parent="Container2" unique_id=1165757809]
+layout_mode = 2
+
+[node name="SingleplayerButton" type="Button" parent="Container2" unique_id=1711817553]
 layout_mode = 2
 text = "Singleplayer"
 
-[node name="MultiplayerButton" type="Button" parent="Container/Container" unique_id=1088870554]
+[node name="MultiplayerButton" type="Button" parent="Container2" unique_id=1088870554]
 layout_mode = 2
 text = "Multiplayer"
 
@@ -47,5 +50,5 @@ text = "Multiplayer"
 visible = false
 layout_mode = 1
 
-[connection signal="pressed" from="Container/Container/SingleplayerButton" to="." method="_on_singleplayer_button_pressed"]
-[connection signal="pressed" from="Container/Container/MultiplayerButton" to="." method="_on_multiplayer_button_pressed"]
+[connection signal="pressed" from="Container2/SingleplayerButton" to="." method="_on_singleplayer_button_pressed"]
+[connection signal="pressed" from="Container2/MultiplayerButton" to="." method="_on_multiplayer_button_pressed"]

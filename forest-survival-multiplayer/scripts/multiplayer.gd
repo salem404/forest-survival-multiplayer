@@ -20,6 +20,14 @@ var lobby_full_recent: bool = false
 
 
 func _ready() -> void:
+	var picker = player_color_picker.get_picker()
+	
+	picker.can_add_swatches = false
+	picker.sampler_visible = false
+	picker.color_modes_visible = false
+	picker.sliders_visible = false
+	picker.presets_visible = false
+	
 	if not game_scene:
 		game_scene = load("res://scenes/game.tscn")
 	if not player_info_list:
@@ -145,7 +153,6 @@ func _on_server_button_pressed() -> void:
 	if connection_type == "Steam":
 		SteamLobby.create_game()
 		disable_buttons(true)
-		startgamebutton.visible = true
 	else:
 		var port = portinput.text.to_int() if portinput.text else LANLobby.DEFAULT_PORT
 		var result = LANLobby.create_game(port)
@@ -197,7 +204,7 @@ func _on_start_game_button_pressed() -> void:
 			lobby = LANLobby
 		# Check if we have multiple players connected
 		if lobby.players.size() < 2:
-			statuslabel.text = "Status: Waiting for all players to connect"
+			statuslabel.text = "Status: Waiting for players to connect"
 			return
 		if connection_type == "Steam":
 			SteamLobby.start_game(game_scene.resource_path)
@@ -210,6 +217,21 @@ func _on_start_game_button_pressed() -> void:
 func disable_buttons(status = false):
 	serverbutton.disabled = status
 	clientbutton.disabled = status
+	ipinput.editable = !status
+	portinput.editable = !status
+	lobbyinput.editable = !status
+	invitebutton.disabled = status
+
+	serverbutton.visible =  not status
+	clientbutton.visible =  not status
+	startgamebutton.visible = not status
+
+	if connection_type == "Steam":
+		%ServerMode.set_tab_disabled(0, status)
+	else:
+
+		%ServerMode.set_tab_disabled(1, status)
+
 
 	#func _on_joined_game(peer_id, player_info):
 	#Lobby.debug_log("joining game: "+str(player_info)+" ("+str(peer_id)+")")

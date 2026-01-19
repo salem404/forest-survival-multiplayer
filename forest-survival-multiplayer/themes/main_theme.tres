@@ -3,25 +3,58 @@
 [ext_resource type="StyleBox" uid="uid://becf5ct4lurpe" path="res://themes/tab_selected.tres" id="1_rjgu6"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_vu6l5"]
-color = Color(1, 1, 1, 1)
-grow_begin = 14.0
-grow_end = 14.0
+color = Color(0.3019608, 0.3019608, 0.3019608, 0.39607844)
+grow_begin = 8.0
+grow_end = 8.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gsqoc"]
 content_margin_top = 5.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vu6l5"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.46, 0.46, 0.46, 0.7490196)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rjgu6"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+border_color = Color(0.24376512, 0.5926848, 0.7032612, 0.7490196)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [resource]
-BoxContainer/constants/separation = 10
+default_font_size = 7
+ColorPicker/constants/sv_height = 40
+ColorPicker/constants/sv_width = 20
 FlowContainer/constants/h_separation = 10
 FlowContainer/constants/v_separation = 10
-HBoxContainer/constants/separation = 10
+HSeparator/constants/separation = 5
 HSeparator/styles/separator = SubResource("StyleBoxLine_vu6l5")
-MarginContainer/constants/margin_bottom = 14
-MarginContainer/constants/margin_left = 14
-MarginContainer/constants/margin_right = 14
-MarginContainer/constants/margin_top = 14
+MarginContainer/constants/margin_bottom = 8
+MarginContainer/constants/margin_left = 8
+MarginContainer/constants/margin_right = 8
+MarginContainer/constants/margin_top = 8
 TabContainer/constants/side_margin = 0
-TabContainer/constants/tab_separation = 4
+TabContainer/constants/tab_separation = 2
+TabContainer/font_sizes/font_size = 8
 TabContainer/styles/panel = SubResource("StyleBoxEmpty_gsqoc")
+TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_vu6l5")
 TabContainer/styles/tab_selected = ExtResource("1_rjgu6")
+TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_rjgu6")
 TabContainer/styles/tabbar_background = null
