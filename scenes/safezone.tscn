@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://dyj11gyt65bnk"]
+
+[ext_resource type="Script" uid="uid://bsimeb2m3mobf" path="res://scripts/safezone.gd" id="1_64pys"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_533eb"]
+
+[node name="Safezone" type="Area2D" unique_id=1733122164]
+script = ExtResource("1_64pys")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=337686078]
+shape = SubResource("CircleShape2D_533eb")
+debug_color = Color(0.4851619, 0.80336076, 0.4961139, 0.57254905)

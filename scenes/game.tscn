@@ -5,6 +5,20 @@
 [ext_resource type="PackedScene" uid="uid://bbivs4getiunx" path="res://scenes/hoguera.tscn" id="3_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://di43nygtyq7vi" path="res://scenes/basic_resource.tscn" id="4_lbhrr"]
 
+[sub_resource type="Gradient" id="Gradient_lbhrr"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_iywne"]
+gradient = SubResource("Gradient_lbhrr")
+
+[sub_resource type="Gradient" id="Gradient_p57ef"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_u5sy4"]
+gradient = SubResource("Gradient_p57ef")
+
 [node name="Game" type="Node2D" unique_id=767992945]
 script = ExtResource("1_yqjtg")
 
@@ -58,7 +72,31 @@ position = Vector2(295, 254)
 position = Vector2(296, 406)
 
 [node name="BasicResource" parent="." unique_id=1850230423 instance=ExtResource("4_lbhrr")]
-position = Vector2(432, 258)
+position = Vector2(364, 383)
 
 [node name="BasicResource2" parent="." unique_id=336468047 instance=ExtResource("4_lbhrr")]
 position = Vector2(231, 260)
+
+[node name="GUI" type="CanvasLayer" parent="." unique_id=174960927]
+
+[node name="Control" type="Control" parent="GUI" unique_id=721666266]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProgressBar" type="TextureProgressBar" parent="GUI/Control" unique_id=1028830414]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+grow_horizontal = 2
+grow_vertical = 0
+nine_patch_stretch = true
+stretch_margin_top = 2
+texture_under = SubResource("GradientTexture1D_iywne")
+texture_progress = SubResource("GradientTexture1D_u5sy4")

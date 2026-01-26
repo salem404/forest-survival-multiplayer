@@ -4,6 +4,7 @@ const PLAYER_SCENE = preload("res://scenes/player.tscn")
 
 @onready var players_nodes = $Players
 @onready var spawners = get_spawner_positions()
+@onready var progress_bar = $GUI/Control/ProgressBar
 
 
 func get_spawner_positions() -> Array[Vector2]:
@@ -26,6 +27,20 @@ func _ready() -> void:
 		call_deferred("start_game_server")
 	else:
 		call_deferred("spawn_singleplayer_player")
+
+
+func _process(delta) -> void:
+	var local_player = get_local_player()
+	if local_player:
+		progress_bar.value = local_player.current_life
+		progress_bar.max_value = local_player.MAXLIFE
+
+
+func get_local_player() -> Player:
+	for player in players_nodes.get_children():
+		if player is Player and player.is_multiplayer_authority():
+			return player
+	return null
 
 
 func _input(event):
