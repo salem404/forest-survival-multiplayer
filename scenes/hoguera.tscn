@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://bbivs4getiunx"]
 
+[ext_resource type="Script" uid="uid://dnq5i52kyhaue" path="res://scripts/hoguera.gd" id="1_ksifd"]
 [ext_resource type="Texture2D" uid="uid://7shtitbsgu65" path="res://assets/hoguera.png" id="1_olx54"]
+[ext_resource type="PackedScene" uid="uid://dyj11gyt65bnk" path="res://scenes/safezone.tscn" id="2_bcj7b"]
 
 [sub_resource type="Gradient" id="Gradient_olx54"]
 offsets = PackedFloat32Array(0, 0.686747)
@@ -11,8 +13,12 @@ gradient = SubResource("Gradient_olx54")
 fill = 1
 fill_from = Vector2(0.49130434, 0.47826087)
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bcj7b"]
+radius = 11.0
+
 [node name="Hoguera" type="Node2D" unique_id=1566909280]
 y_sort_enabled = true
+script = ExtResource("1_ksifd")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1269311457]
 texture = ExtResource("1_olx54")
@@ -24,3 +30,12 @@ shadow_filter = 2
 shadow_item_cull_mask = 3
 texture = SubResource("GradientTexture2D_bcj7b")
 texture_scale = 4.0
+
+[node name="SafeZone" parent="." unique_id=1733122164 instance=ExtResource("2_bcj7b")]
+radius = 80.0
+
+[node name="FlameZone" type="Area2D" parent="." unique_id=399796223]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FlameZone" unique_id=1547962428]
+shape = SubResource("CapsuleShape2D_bcj7b")
+debug_color = Color(0.552316, 0.42260584, 0.9505784, 0.41960785)

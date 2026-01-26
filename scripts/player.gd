@@ -2,7 +2,7 @@ class_name Player
 extends CharacterBody2D
 
 const SPEED: float = 200.0
-const MAXLIFE: float = 50.0
+const MAXLIFE: float = 100.0
 
 var player_layers: Array[int] = [1, 2, 4, 8]
 var collision_masks: Array[int] = [238, 221, 187, 119]
@@ -29,7 +29,7 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
-	current_life = MAXLIFE
+	current_life = 50.0
 
 	collision_layer = player_layers[index]
 	collision_mask = collision_masks[index]
@@ -135,6 +135,9 @@ func set_index(_index):
 	collision_layer = player_layers[index]
 	collision_mask = collision_masks[index]
 
+@rpc("any_peer", "call_local", "reliable")
+func heal(amount: float) -> void:
+	current_life = min(current_life + amount, MAXLIFE)
 
 func _check_player_count() -> void:
 	var peer_count = multiplayer.get_peers().size() + 1 # +1 for self

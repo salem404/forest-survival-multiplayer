@@ -8,6 +8,7 @@ size = Vector2(27, 9)
 
 [node name="Player" type="CharacterBody2D" unique_id=2102833124]
 script = ExtResource("1_g2els")
+current_life = 50.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=302938748]
 position = Vector2(-0.5, 8.5)
