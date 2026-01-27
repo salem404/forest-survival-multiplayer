@@ -64,6 +64,9 @@ func start_game_server():
 
 	for id in sorted_ids:
 		var player_info = game_manager.current_lobby.players[id]
+		# Spawn locally on server
+		_spawn_player_networked(id, i, player_info.get("color", Color.WHITE), player_info.get("name", "Player %d" % (i + 1)))
+		# Tell clients to spawn too
 		_spawn_player_networked.rpc(id, i, player_info.get("color", Color.WHITE), player_info.get("name", "Player %d" % (i + 1)))
 		i += 1
 
@@ -71,7 +74,7 @@ func start_game_server():
 		game_manager.current_lobby.player_loaded.rpc_id(1)
 
 
-@rpc("any_peer", "call_local", "reliable")
+@rpc("authority", "call_remote", "reliable")
 func _spawn_player_networked(id: int, index: int, color: Color, name_str: String):
 	var player = PLAYER_SCENE.instantiate()
 	player.name = str(id)
