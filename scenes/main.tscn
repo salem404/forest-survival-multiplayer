@@ -31,6 +31,3 @@ layout_mode = 1
 [node name="SettingsMenu" parent="GameManager" unique_id=1153598029 instance=ExtResource("3_tbgi4")]
 unique_name_in_owner = true
 layout_mode = 1
-
-[node name="InGameUI" type="CanvasLayer" parent="GameManager" unique_id=1604983108]
-unique_name_in_owner = true

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6fkw38gpv5vi"
-path="res://.godot/imported/pseudoconejo-spritesheet_20241212.png-ba2b4a4ecf6e9bb225dee12e6e2c0a49.ctex"
+uid="uid://bsl7d88b1oqgg"
+path="res://.godot/imported/pseudoconejo-spritesheet.png-5edbac6d129a51f38a99b8afc654208f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/pseudoconejo-spritesheet_20241212.png"
-dest_files=["res://.godot/imported/pseudoconejo-spritesheet_20241212.png-ba2b4a4ecf6e9bb225dee12e6e2c0a49.ctex"]
+source_file="res://assets/pseudoconejo-spritesheet.png"
+dest_files=["res://.godot/imported/pseudoconejo-spritesheet.png-5edbac6d129a51f38a99b8afc654208f.ctex"]
 
 [params]
 
