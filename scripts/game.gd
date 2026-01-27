@@ -64,23 +64,27 @@ func start_game_server():
 
 	for id in sorted_ids:
 		var player_info = game_manager.current_lobby.players[id]
-		var player = PLAYER_SCENE.instantiate()
-		player.name = str(id)
-		player.index = i
-		player.player_color = player_info.get("color", Color.WHITE)
-		var player_display_name = player_info.get("name", "Player %d" % (i + 1))
-		player.player_name = player_display_name
-
-		if spawners.size() > i:
-			player.global_position = spawners[i]
-		else:
-			player.global_position = Vector2(100 + i * 50, 100)
-
-		players_nodes.add_child(player)
+		_spawn_player_networked.rpc(id, i, player_info.get("color", Color.WHITE), player_info.get("name", "Player %d" % (i + 1)))
 		i += 1
 
 	if not multiplayer.is_server():
 		game_manager.current_lobby.player_loaded.rpc_id(1)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _spawn_player_networked(id: int, index: int, color: Color, name_str: String):
+	var player = PLAYER_SCENE.instantiate()
+	player.name = str(id)
+	player.index = index
+	player.player_color = color
+	player.player_name = name_str
+
+	if spawners.size() > index:
+		player.global_position = spawners[index]
+	else:
+		player.global_position = Vector2(100 + index * 50, 100)
+
+	players_nodes.add_child(player)
 
 
 func spawn_singleplayer_player():

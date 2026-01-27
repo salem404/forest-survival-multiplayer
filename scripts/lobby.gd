@@ -38,7 +38,7 @@ func _start_game(_game_scene: String):
 
 # When the server decides to start the game from a UI scene,
 # do Lobby.load_game.rpc(filepath)
-@rpc("call_remote", "reliable")
+@rpc("authority", "call_remote", "reliable")
 func load_game(_game_scene: String):
 	var game_manager = get_tree().root.find_child("GameManager", true, false)
 	if game_manager:
@@ -130,7 +130,7 @@ func _reject_peer(id: int) -> void:
 	multiplayer.disconnect_peer(id)
 
 
-@rpc("call_remote", "reliable")
+@rpc("authority", "call_remote", "reliable")
 func _lobby_full_message() -> void:
 	lobby_full.emit()
 
