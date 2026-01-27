@@ -80,6 +80,8 @@ func _on_player_connected(id, player_info):
 	info_list.id = id
 	info_list.player_info = player_info
 	player_list.add_child(info_list)
+	if connection_type == "Steam" and SteamLobby.is_host and SteamLobby.players.size() >= 2:
+		startgamebutton.visible = true
 
 
 func _on_player_disconnected(id):
@@ -87,6 +89,8 @@ func _on_player_disconnected(id):
 		if child.has_method("get") and child.get("id") == id:
 			child.queue_free()
 			break
+	if connection_type == "Steam" and SteamLobby.is_host and SteamLobby.players.size() < 2:
+		startgamebutton.visible = false
 
 
 func _clear_player_list():
