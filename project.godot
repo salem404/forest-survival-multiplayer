@@ -67,6 +67,10 @@ move_right={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://translations/ui_translation.en.translation", "res://translations/ui_translation.es.translation")
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

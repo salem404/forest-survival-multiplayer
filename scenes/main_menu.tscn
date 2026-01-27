@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://crlkhki0sk2fv" path="res://scripts/main_menu.gd" id="1_ekxnf"]
 [ext_resource type="PackedScene" uid="uid://o518pwdppmil" path="res://scenes/multiplayer.tscn" id="1_l6cm7"]
 [ext_resource type="FontFile" uid="uid://es3p5onc2wk1" path="res://themes/dank-depths-0.1.0/Dank-Depths.ttf" id="2_bqqt6"]
+[ext_resource type="Texture2D" uid="uid://btxapt4objm0n" path="res://assets/Lucid-V1.2/Person.png" id="3_8ln24"]
+[ext_resource type="Texture2D" uid="uid://cebniixxyhun5" path="res://assets/Lucid-V1.2/People.png" id="4_rtw2f"]
+[ext_resource type="Texture2D" uid="uid://ctqvdvu1q5ot0" path="res://assets/Lucid-V1.2/Gear.png" id="5_rtw2f"]
 
 [node name="MainMenu" type="Control" unique_id=495659329]
 layout_mode = 3
@@ -31,7 +34,7 @@ alignment = 1
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_bqqt6")
 theme_override_font_sizes/font_size = 16
-text = "Title"
+text = "ui_title"
 horizontal_alignment = 1
 uppercase = true
 
@@ -40,11 +43,18 @@ layout_mode = 2
 
 [node name="SingleplayerButton" type="Button" parent="Container2" unique_id=1711817553]
 layout_mode = 2
-text = "Singleplayer"
+text = "ui_singleplayer"
+icon = ExtResource("3_8ln24")
 
 [node name="MultiplayerButton" type="Button" parent="Container2" unique_id=1088870554]
 layout_mode = 2
-text = "Multiplayer"
+text = "ui_multiplayer"
+icon = ExtResource("4_rtw2f")
+
+[node name="SettingsButton" type="Button" parent="Container2" unique_id=2057602729]
+layout_mode = 2
+text = "ui_settings"
+icon = ExtResource("5_rtw2f")
 
 [node name="Multiplayer" parent="." unique_id=1323987310 instance=ExtResource("1_l6cm7")]
 visible = false

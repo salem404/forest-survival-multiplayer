@@ -36,7 +36,7 @@ func _ready() -> void:
 		call_deferred("spawn_singleplayer_player")
 
 
-func _process(delta) -> void:
+func _process(_delta) -> void:
 	var local_player = get_local_player()
 	if local_player:
 		progress_bar.value = local_player.current_life
@@ -83,10 +83,12 @@ func start_game_server():
 
 	for id in sorted_ids:
 		var player_info = game_manager.current_lobby.players[id]
+		var color = player_info.get("color", Color.WHITE)
+		var name_str = player_info.get("name", "Player %d" % (i + 1))
 		# Spawn locally on server
-		_spawn_player_networked(id, i, player_info.get("color", Color.WHITE), player_info.get("name", "Player %d" % (i + 1)))
+		_spawn_player_networked(id, i, color, name_str)
 		# Tell clients to spawn too
-		_spawn_player_networked.rpc(id, i, player_info.get("color", Color.WHITE), player_info.get("name", "Player %d" % (i + 1)))
+		_spawn_player_networked.rpc(id, i, color, name_str)
 		i += 1
 
 	if not multiplayer.is_server():

@@ -30,4 +30,5 @@ layout_mode = 1
 
 [node name="SettingsMenu" parent="GameManager" unique_id=1153598029 instance=ExtResource("3_tbgi4")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1

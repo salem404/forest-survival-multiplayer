@@ -100,7 +100,7 @@ func _clear_player_list():
 
 func _on_connection_failed():
 	lobby_full_recent = false
-	statuslabel.text = "Status: Connection failed"
+	statuslabel.text = "ui_status_failed"
 	_clear_player_list()
 	_set_player_custom_enabled(true)
 	disable_buttons(false)
@@ -108,7 +108,7 @@ func _on_connection_failed():
 
 func _on_lobby_full():
 	lobby_full_recent = true
-	statuslabel.text = "Status: Lobby is full"
+	statuslabel.text = "ui_status_full"
 	_clear_player_list()
 	_set_player_custom_enabled(true)
 	disable_buttons(false)
@@ -124,7 +124,7 @@ func _on_back_to_menu_button_pressed() -> void:
 		lobby.remove_multiplayer_peer()
 	_clear_player_list()
 	_set_player_custom_enabled(true)
-	statuslabel.text = "Status: Ready"
+	statuslabel.text = "ui_status_ready"
 	disable_buttons(false)
 	startgamebutton.visible = false
 	$".".hide()
@@ -155,7 +155,7 @@ func _on_server_button_pressed() -> void:
 	else:
 		lobby = LANLobby
 	if lobby.has_active_peer():
-		statuslabel.text = "Status: Already connected"
+		statuslabel.text = "ui_status_already_connected"
 		return
 
 	if connection_type == "Steam":
@@ -170,13 +170,13 @@ func _on_server_button_pressed() -> void:
 		if result != OK:
 			match result:
 				ERR_ALREADY_IN_USE:
-					statuslabel.text = "Status: Port %d already in use" % port
+					statuslabel.text = tr("ui_status_port_in_use") % port
 				_:
-					statuslabel.text = "Status: Failed to create server"
+					statuslabel.text = "ui_status_creation_failed"
 			disable_buttons(false)
 			startgamebutton.visible = false
 			return
-		statuslabel.text = "Status: Server created on port %d" % port
+		statuslabel.text = tr("ui_status_creation_success") % port
 		disable_buttons(true)
 		startgamebutton.visible = true
 
@@ -194,7 +194,7 @@ func _on_client_button_pressed() -> void:
 		var address = ipinput.text if ipinput.text else LANLobby.DEFAULT_SERVER_IP
 		var port = portinput.text.to_int() if portinput.text else LANLobby.DEFAULT_PORT
 		LANLobby.join_game(address, port)
-		statuslabel.text = "Status: Connecting to %s:%d" % [address, port]
+		statuslabel.text = tr("ui_status_connecting") % [address, port]
 	disable_buttons(true)
 
 
@@ -215,14 +215,14 @@ func _on_start_game_button_pressed() -> void:
 			lobby = LANLobby
 		# Check if we have multiple players connected
 		if lobby.players.size() < 2:
-			statuslabel.text = "Status: Waiting for players to connect"
+			statuslabel.text = "ui_status_waiting_for_players"
 			return
 		if connection_type == "Steam":
 			SteamLobby.start_game(game_scene.resource_path)
 		else:
 			LANLobby.start_game(game_scene.resource_path)
 	else:
-		statuslabel.text = "Status: Game scene not set"
+		statuslabel.text = "ui_status_fail_gamescene"
 
 
 func disable_buttons(status = false):
@@ -262,7 +262,7 @@ func _on_server_disconnected():
 		lobby.remove_multiplayer_peer()
 	if lobby_full_recent:
 		lobby_full_recent = false
-		statuslabel.text = "Status: Lobby is full"
+		statuslabel.text = "ui_status_full"
 		disable_buttons(false)
 		_set_player_custom_enabled(true)
 		_clear_player_list()
@@ -271,13 +271,23 @@ func _on_server_disconnected():
 
 
 func _required_data() -> bool:
-	statuslabel.text = "Status: "
 	var result = true
 	if not playername.text:
-		statuslabel.text += "Name required "
+		statuslabel.text = "ui_name_required"
 		result = false
+	if connection_type == "LAN":
+		if not ipinput.text and not serverbutton.pressed:
+			statuslabel.text = "ui_ip_required"
+			result = false
+		if not portinput.text:
+			statuslabel.text = "ui_port_required"
+			result = false
+	else:
+		if not lobbyinput.text and not serverbutton.pressed:
+			statuslabel.text = "ui_lobby_required"
+			result = false
 	if result:
-		statuslabel.text += "Waiting "
+		statuslabel.text = "ui_status_waiting_for_players"
 		if connection_type == "Steam":
 			SteamLobby.player_info["name"] = playername.text
 			SteamLobby.player_info["color"] = player_color_picker.color
