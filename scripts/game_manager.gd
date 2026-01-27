@@ -9,6 +9,8 @@ var current_lobby: Node
 
 
 func _ready():
+	# Initialize Steam on game startup
+	SteamLobby.init()
 	%MainMenu.visible = true
 	%SettingsMenu.visible = false
 
