@@ -107,7 +107,7 @@ func _apply_remote_state(_position: Vector2, _is_moving: bool, _flip_h: bool) ->
 	$AnimatedSprite2D.play()
 
 
-@rpc("authority", "call_local", "unreliable")
+@rpc("authority", "call_remote", "unreliable")
 func sync_movement(_position: Vector2, _is_moving: bool, _flip_h: bool):
 	if _is_local_authority():
 		return
