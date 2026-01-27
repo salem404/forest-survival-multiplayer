@@ -17,6 +17,12 @@ func get_spawner_positions() -> Array[Vector2]:
 
 
 func _ready() -> void:
+	# Enable Y-sorting for proper depth based on Y position
+	if has_node("Mapa"):
+		$Mapa.y_sort_enabled = true
+	if has_node("Players"):
+		$Players.y_sort_enabled = true
+	
 	var game_manager = get_tree().root.find_child("GameManager", true, false)
 	var has_lobby = game_manager and game_manager.current_lobby
 	var has_lobby_players = has_lobby and game_manager.current_lobby.players.size() > 0
@@ -35,6 +41,18 @@ func _process(delta) -> void:
 	if local_player:
 		progress_bar.value = local_player.current_life
 		progress_bar.max_value = local_player.MAXLIFE
+	
+	# Update z_index for all players based on Y position
+	if has_node("Players"):
+		for child in $Players.get_children():
+			if child is Player:
+				child.z_index = int(child.position.y)
+	
+	# Update z_index for all children of Mapa based on Y position
+	if has_node("Mapa"):
+		for child in $Mapa.get_children():
+			if child is Node2D and not child is TileMapLayer:
+				child.z_index = int(child.position.y)
 
 
 func get_local_player() -> Player:

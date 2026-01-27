@@ -7,24 +7,25 @@
 size = Vector2(27, 9)
 
 [node name="Player" type="CharacterBody2D" unique_id=2102833124]
+y_sort_enabled = true
 script = ExtResource("1_g2els")
 current_life = 50.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=302938748]
-position = Vector2(-0.5, 8.5)
+position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_3vyb7")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1400634564]
-position = Vector2(0, -5)
+position = Vector2(0, -21)
 sprite_frames = ExtResource("2_g2els")
 autoplay = "default"
 frame_progress = 0.52171975
 
 [node name="NicknameLabel" type="Label" parent="." unique_id=605167716]
 offset_left = -65.0
-offset_top = -49.0
+offset_top = -62.0
 offset_right = 66.0
-offset_bottom = -26.0
+offset_bottom = -39.0
 theme_override_constants/outline_size = 7
 theme_override_font_sizes/font_size = 12
 text = "1234567890qawd"

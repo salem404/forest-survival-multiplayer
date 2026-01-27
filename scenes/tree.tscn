@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://di43nygtyq7vi"]
+
+[ext_resource type="Texture2D" uid="uid://cadm0i3ww4tmo" path="res://assets/tree.png" id="1_g4v5d"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_avsvi"]
+cull_mode = 1
+polygon = PackedVector2Array(10, -42, -9, -42, -9, 1, 10, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_collision"]
+size = Vector2(29, 7)
+
+[node name="Tree" type="Node2D" unique_id=1850230423]
+y_sort_enabled = true
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="." unique_id=977842614]
+occluder = SubResource("OccluderPolygon2D_avsvi")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=198098079]
+position = Vector2(0, -106)
+texture = ExtResource("1_g4v5d")
+
+[node name="SolidCollision" type="StaticBody2D" parent="." unique_id=1850230424]
+collision_layer = 15
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SolidCollision" unique_id=1850230425]
+position = Vector2(-0.5, 1)
+shape = SubResource("RectangleShape2D_collision")

@@ -13,8 +13,8 @@ gradient = SubResource("Gradient_olx54")
 fill = 1
 fill_from = Vector2(0.49130434, 0.47826087)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bcj7b"]
-radius = 11.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ksifd"]
+size = Vector2(34, 20)
 
 [node name="Hoguera" type="Node2D" unique_id=1566909280]
 y_sort_enabled = true
@@ -32,10 +32,12 @@ texture = SubResource("GradientTexture2D_bcj7b")
 texture_scale = 4.0
 
 [node name="SafeZone" parent="." unique_id=1733122164 instance=ExtResource("2_bcj7b")]
-radius = 80.0
+radius = 60.0
 
-[node name="FlameZone" type="Area2D" parent="." unique_id=399796223]
+[node name="SolidCollision" type="StaticBody2D" parent="." unique_id=1850230424]
+collision_layer = 15
+collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FlameZone" unique_id=1547962428]
-shape = SubResource("CapsuleShape2D_bcj7b")
-debug_color = Color(0.552316, 0.42260584, 0.9505784, 0.41960785)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SolidCollision" unique_id=1547962429]
+position = Vector2(0, 9)
+shape = SubResource("RectangleShape2D_ksifd")

@@ -10,7 +10,6 @@ var current_lobby: Node
 
 func _ready():
 	%MainMenu.visible = true
-	%InGameUI.visible = false
 	%SettingsMenu.visible = false
 
 
