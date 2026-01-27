@@ -24,7 +24,8 @@ func _ready() -> void:
 	if _is_multiplayer_active() and has_lobby_players:
 		game_manager.current_lobby.server_disconnected.connect(_on_server_disconnected)
 		game_manager.current_lobby.player_disconnected.connect(_on_player_disconnected)
-		call_deferred("start_game_server")
+		if multiplayer.is_server():
+			call_deferred("start_game_server")
 	else:
 		call_deferred("spawn_singleplayer_player")
 
