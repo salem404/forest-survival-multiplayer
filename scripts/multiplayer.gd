@@ -35,34 +35,34 @@ func _ready() -> void:
 	
 	var game_manager = get_tree().root.find_child("GameManager", true, false)
 	
-	if connection_type == "Steam":
-		SteamLobby.init()
-		game_manager.current_lobby = SteamLobby
-		# event callback when invited by friend
-		Steam.join_requested.connect(_on_join_requested)
-		# events from lobby
-		SteamLobby.player_connected.connect(_on_player_connected)
-		SteamLobby.player_disconnected.connect(_on_player_disconnected)
-		SteamLobby.server_created.connect(_on_server_created)
-		SteamLobby.server_disconnected.connect(_on_server_disconnected)
-		SteamLobby.connection_failed.connect(_on_connection_failed)
-		SteamLobby.lobby_full.connect(_on_lobby_full)
+	# Always initialize Steam at startup
+	SteamLobby.init()
+	# event callback when invited by friend
+	Steam.join_requested.connect(_on_join_requested)
+	# events from lobby
+	SteamLobby.player_connected.connect(_on_player_connected)
+	SteamLobby.player_disconnected.connect(_on_player_disconnected)
+	SteamLobby.server_created.connect(_on_server_created)
+	SteamLobby.server_disconnected.connect(_on_server_disconnected)
+	SteamLobby.connection_failed.connect(_on_connection_failed)
+	SteamLobby.lobby_full.connect(_on_lobby_full)
+	
+	# Connect LAN lobby signals (will be initialized when needed)
+	LANLobby.player_connected.connect(_on_player_connected)
+	LANLobby.player_disconnected.connect(_on_player_disconnected)
+	LANLobby.server_disconnected.connect(_on_server_disconnected)
+	LANLobby.connection_failed.connect(_on_connection_failed)
+	LANLobby.lobby_full.connect(_on_lobby_full)
 
-		### debug only
+	portinput.text = str(LANLobby.DEFAULT_PORT)
+	ipinput.text = LANLobby.DEFAULT_SERVER_IP
+	
+	# Set current lobby based on connection_type (defaults to LAN)
+	if connection_type == "Steam":
+		game_manager.current_lobby = SteamLobby
 		playername.text = Steam.getFriendPersonaName(Steam.getSteamID())
 	else:
-		LANLobby.init()
 		game_manager.current_lobby = LANLobby
-		LANLobby.player_connected.connect(_on_player_connected)
-		LANLobby.player_disconnected.connect(_on_player_disconnected)
-		LANLobby.server_disconnected.connect(_on_server_disconnected)
-		LANLobby.connection_failed.connect(_on_connection_failed)
-		LANLobby.lobby_full.connect(_on_lobby_full)
-
-		portinput.text = str(LANLobby.DEFAULT_PORT)
-		ipinput.text = LANLobby.DEFAULT_SERVER_IP
-
-		### debug only
 		playername.text = "debug player"
 
 
@@ -127,11 +127,15 @@ func _on_back_to_menu_button_pressed() -> void:
 
 
 func _on_server_mode_tab_selected(tab: int) -> void:
+	var game_manager = get_tree().root.find_child("GameManager", true, false)
 	match tab:
 		0:
 			connection_type = "LAN"
+			game_manager.current_lobby = LANLobby
 		1:
 			connection_type = "Steam"
+			game_manager.current_lobby = SteamLobby
+			playername.text = Steam.getFriendPersonaName(Steam.getSteamID())
 
 
 func _on_player_color_color_changed(_color: Color) -> void:
@@ -154,6 +158,9 @@ func _on_server_button_pressed() -> void:
 		SteamLobby.create_game()
 		disable_buttons(true)
 	else:
+		# Initialize LAN lobby on first use
+		if not LANLobby.initialized:
+			LANLobby.init()
 		var port = portinput.text.to_int() if portinput.text else LANLobby.DEFAULT_PORT
 		var result = LANLobby.create_game(port)
 		if result != OK:
