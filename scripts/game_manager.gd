@@ -31,6 +31,9 @@ func swap_scene_to_file(replacement_scene_path: String) -> void:
 	var scene = load(replacement_scene_path).instantiate()
 	add_child(scene)
 
+func toggle_settings_menu() -> void:
+	%SettingsMenu.visible = !%SettingsMenu.visible
+
 
 func _clear_dynamic_scenes() -> void:
 	for child in get_children():

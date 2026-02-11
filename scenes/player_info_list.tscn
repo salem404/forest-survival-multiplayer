@@ -20,8 +20,8 @@ layout_mode = 2
 border_color = Color(0, 0, 0, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="ReferenceRect" unique_id=1807325152]
-position = Vector2(3.999999, 4.000001)
-scale = Vector2(0.20833336, 0.20833336)
+position = Vector2(4.6249995, 3.375)
+scale = Vector2(0.18749999, 0.18749999)
 texture = ExtResource("2_ffrbg")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ReferenceRect" unique_id=708004599]
@@ -37,4 +37,4 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "12345678901111"
-vertical_alignment = 1
+vertical_alignment = 2

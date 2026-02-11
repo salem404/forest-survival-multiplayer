@@ -22,8 +22,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sugp2")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="GameManager" unique_id=1245429659]
-
 [node name="MainMenu" parent="GameManager" unique_id=495659329 instance=ExtResource("2_jyhfs")]
 unique_name_in_owner = true
 layout_mode = 1
