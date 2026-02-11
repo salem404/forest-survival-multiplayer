@@ -5,7 +5,7 @@ extends HBoxContainer
 
 @onready var id_label = $Label
 @onready var reference_rect = $ReferenceRect
-@onready var avatar = $ReferenceRect/AnimatedSprite2D
+@onready var avatar = $ReferenceRect/Sprite2D
 @onready var name_label = $Label2
 
 func _ready() -> void:

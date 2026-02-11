@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://d0kmwqtivhwtc"]
 
-[ext_resource type="SpriteFrames" uid="uid://vi38ou2cpjet" path="res://psudoconejo_frames.tres" id="1_8pyhx"]
+[ext_resource type="SpriteFrames" uid="uid://d0j4d7x2e0tbx" path="res://psudoconejo_frames.tres" id="1_8pyhx"]
 [ext_resource type="Script" uid="uid://dwd5lcbap10ec" path="res://scripts/player_info_list.gd" id="1_hynfv"]
+[ext_resource type="Texture2D" uid="uid://dmgnvk7jac7qb" path="res://assets/head.png" id="2_ffrbg"]
 
 [node name="PlayerInfoList" type="HBoxContainer" unique_id=676074094]
 theme_override_constants/separation = 3
@@ -18,11 +19,18 @@ custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
 border_color = Color(0, 0, 0, 1)
 
+[node name="Sprite2D" type="Sprite2D" parent="ReferenceRect" unique_id=1807325152]
+position = Vector2(3.999999, 4.000001)
+scale = Vector2(0.20833336, 0.20833336)
+texture = ExtResource("2_ffrbg")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ReferenceRect" unique_id=708004599]
+visible = false
 position = Vector2(4, 5)
 scale = Vector2(0.205, 0.205)
 sprite_frames = ExtResource("1_8pyhx")
-frame = 7
+animation = &"emoteFront"
+frame = 3
 
 [node name="Label2" type="Label" parent="." unique_id=408914152]
 layout_mode = 2
