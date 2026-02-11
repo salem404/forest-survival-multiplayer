@@ -3,6 +3,9 @@
 [ext_resource type="StyleBox" uid="uid://becf5ct4lurpe" path="res://themes/tab_selected.tres" id="1_b0l6s"]
 [ext_resource type="Script" uid="uid://cg1b57f1e4fhw" path="res://scripts/multiplayer.gd" id="1_pjkx2"]
 [ext_resource type="FontFile" uid="uid://es3p5onc2wk1" path="res://themes/dank-depths-0.1.0/Dank-Depths.ttf" id="3_pjkx2"]
+[ext_resource type="Texture2D" uid="uid://bfg283sj6dnb" path="res://assets/Lucid-V1.2/Signal-0.png" id="3_uvo4r"]
+[ext_resource type="Texture2D" uid="uid://i5lc0k26sxo3" path="res://assets/Lucid-V1.2/Home.png" id="5_a6lh4"]
+[ext_resource type="Texture2D" uid="uid://0ruj5wpsonyi" path="res://assets/Lucid-V1.2/Power.png" id="6_gpc4n"]
 
 [node name="Multiplayer" type="Control" unique_id=1622268342]
 layout_mode = 3
@@ -44,7 +47,7 @@ alignment = 1
 [node name="Label" type="Label" parent="Panel/PanelMargin/VBoxContainer" unique_id=605798567]
 layout_mode = 2
 theme_override_font_sizes/font_size = 7
-text = "Multiplayer Lobby"
+text = "ui_multiplayer_lobby"
 horizontal_alignment = 1
 uppercase = true
 
@@ -61,7 +64,7 @@ alignment = 1
 [node name="PlayerNameLabel" type="Label" parent="Panel/PanelMargin/VBoxContainer/PlayerCustom/PlayerNameContainer" unique_id=231396333]
 layout_mode = 2
 size_flags_vertical = 5
-text = "PlayerName"
+text = "ui_player_name"
 horizontal_alignment = 2
 vertical_alignment = 1
 
@@ -70,7 +73,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-placeholder_text = "Enter your name"
+placeholder_text = "ui_player_name_placeholder"
 alignment = 1
 max_length = 14
 caret_blink = true
@@ -79,7 +82,7 @@ caret_blink = true
 unique_name_in_owner = true
 layout_mode = 2
 text = "#ffffff"
-color = Color(1, 1, 1, 1)
+color = Color(0.69099766, 0.69099766, 0.69099766, 1)
 edit_alpha = false
 edit_intensity = false
 
@@ -126,7 +129,7 @@ alignment = 1
 [node name="Label3" type="Label" parent="Panel/PanelMargin/VBoxContainer/ServerMode/LAN/Port" unique_id=852527431]
 layout_mode = 2
 size_flags_vertical = 5
-text = "Port"
+text = "ui_port"
 horizontal_alignment = 2
 vertical_alignment = 1
 
@@ -175,7 +178,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 disabled = true
-text = "Invite Friend"
+text = "ui_invite_friend"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Panel/PanelMargin/VBoxContainer" unique_id=921604325]
 layout_mode = 2
@@ -187,7 +190,7 @@ layout_mode = 2
 [node name="StatusLabel" type="Label" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2" unique_id=1990075972]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Status: Pending"
+text = "ui_status_pending"
 
 [node name="VSeparator4" type="HSeparator" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2" unique_id=472635066]
 layout_mode = 2
@@ -199,13 +202,13 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Start Server"
+text = "ui_start_server"
 
 [node name="ClientButton" type="Button" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2/ButtonsContainer" unique_id=1778508712]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Connect to Server"
+text = "ui_join_server"
 
 [node name="StartGameButton" type="Button" parent="Panel/PanelMargin/VBoxContainer/VBoxContainer2" unique_id=1547245171]
 unique_name_in_owner = true
@@ -224,21 +227,41 @@ grow_vertical = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="PlayersLabel" type="Label" parent="MarginContainer/PlayerList" unique_id=1060356375]
+[node name="PlayersLabel" type="Button" parent="MarginContainer/PlayerList" unique_id=339209014]
 layout_mode = 2
-text = "Connected Players:"
+text = "ui_connected_players"
+icon = ExtResource("3_uvo4r")
+flat = true
+expand_icon = true
 
-[node name="BackToMenuButton" type="Button" parent="." unique_id=279871915]
+[node name="BackToMenuButton2" type="VBoxContainer" parent="." unique_id=1121545974]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -17.0
-offset_right = 14.0
+offset_top = -22.0
+offset_right = 32.0
 grow_vertical = 0
+alignment = 2
+
+[node name="BackToMenuButton" type="Button" parent="BackToMenuButton2" unique_id=279871915]
+layout_mode = 2
 theme_override_fonts/font = ExtResource("3_pjkx2")
 theme_override_font_sizes/font_size = 8
-text = "X"
+text = "
+"
+icon = ExtResource("5_a6lh4")
+icon_alignment = 1
+
+[node name="BackToMenuButton2" type="Button" parent="BackToMenuButton2" unique_id=1269601507]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_pjkx2")
+theme_override_font_sizes/font_size = 8
+text = "
+"
+icon = ExtResource("6_gpc4n")
+icon_alignment = 1
 
 [connection signal="color_changed" from="Panel/PanelMargin/VBoxContainer/PlayerCustom/PlayerNameContainer/PlayerColor" to="." method="_on_player_color_color_changed"]
 [connection signal="tab_selected" from="Panel/PanelMargin/VBoxContainer/ServerMode" to="." method="_on_server_mode_tab_selected"]
@@ -247,4 +270,4 @@ text = "X"
 [connection signal="pressed" from="Panel/PanelMargin/VBoxContainer/VBoxContainer2/ButtonsContainer/ServerButton" to="." method="_on_server_button_pressed"]
 [connection signal="pressed" from="Panel/PanelMargin/VBoxContainer/VBoxContainer2/ButtonsContainer/ClientButton" to="." method="_on_client_button_pressed"]
 [connection signal="pressed" from="Panel/PanelMargin/VBoxContainer/VBoxContainer2/StartGameButton" to="." method="_on_start_game_button_pressed"]
-[connection signal="pressed" from="BackToMenuButton" to="." method="_on_back_to_menu_button_pressed"]
+[connection signal="pressed" from="BackToMenuButton2/BackToMenuButton" to="." method="_on_back_to_menu_button_pressed"]

@@ -7,6 +7,8 @@ color = Color(0.3019608, 0.3019608, 0.3019608, 0.39607844)
 grow_begin = 8.0
 grow_end = 8.0
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rjgu6"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gsqoc"]
 content_margin_top = 5.0
 
@@ -46,6 +48,8 @@ FlowContainer/constants/h_separation = 10
 FlowContainer/constants/v_separation = 10
 HSeparator/constants/separation = 5
 HSeparator/styles/separator = SubResource("StyleBoxLine_vu6l5")
+ItemList/font_sizes/font_size = 24
+ItemList/styles/panel = SubResource("StyleBoxEmpty_rjgu6")
 MarginContainer/constants/margin_bottom = 8
 MarginContainer/constants/margin_left = 8
 MarginContainer/constants/margin_right = 8

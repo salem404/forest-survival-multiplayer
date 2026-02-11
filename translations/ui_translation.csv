@@ -1,0 +1,37 @@
+key,es,en
+ui_settings,Ajustes,Settings
+ui_screen, Pantalla,Screen
+ui_language,Idioma,Language
+ui_exit_multiplayer,Acabar conexión,End Connection
+ui_close_game,Cerrar juego,Close Game
+ui_back_to_menu,Volver al menu,Back to Menu
+ui_audio,Audio,Audio
+ui_music,Música,Music
+ui_sound_effects,Efectos de sonido,Sound Effects
+ui_back,Volver,Back
+ui_title,Título,Title
+ui_singleplayer,Partida individual,Singleplayer
+ui_multiplayer,Multijugador,Multiplayer
+ui_connected_players,Conexiones:,Connected Players:
+ui_multiplayer_lobby,Sala multijugador,Multiplayer Lobby
+ui_player_name,Nombre,Name
+ui_player_name_placeholder,Introduce tu nombre,Enter your name
+ui_port,Puerto,Port
+ui_invite_friend,Invitar amistad,Invite a Friend
+ui_status_pending,Esperando conexion...,Waiting for connection...
+ui_start_server,Iniciar servidor,Start Server
+ui_join_server,Unirse a servidor,Join Server
+ui_status_failed,Error de conexion,Connection Failed
+ui_status_full,Sala llena,Lobby Full
+ui_status_ready,Preparado,Ready
+ui_status_already_connected,Ya conectado,Already Connected
+ui_status_port_in_use,Puerto %d en uso,Port %d already in use
+ui_status_creation_failed,Fallo al crear servidor,Failed to create server
+ui_status_creation_success,Servidor creado en el puerto %d,Server created on port %d
+ui_status_connecting,Conectando a %s:%d,Connecting to %s:%d
+ui_status_waiting_for_players,Esperando compis,Waiting for pals
+ui_status_fail_gamescene,Error al cargar la escena de juego,Failed to load game scene
+ui_name_required,Nombre necesario,Name required
+ui_ip_required,IP necesario,IP required
+ui_port_required,Puerto necesario,Port required
+ui_lobby_required,Lobby ID necesario,Lobby ID required

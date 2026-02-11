@@ -1,5 +1,23 @@
 [gd_scene format=3 uid="uid://byyngbmk7vwob"]
 
+[ext_resource type="Texture2D" uid="uid://cgiptu75uqmt7" path="res://assets/Snoblin_Flags_of_Europe/Spain.png" id="1_cr101"]
+[ext_resource type="Texture2D" path="res://assets/Asperand-Sign.png" id="1_n35ux"]
+[ext_resource type="Texture2D" path="res://assets/CD.png" id="2_fb6cq"]
+[ext_resource type="Texture2D" uid="uid://dydrj2x0xv5wb" path="res://assets/Snoblin_Flags_of_Europe/United_Kingdom.png" id="2_wswnh"]
+[ext_resource type="Texture2D" uid="uid://drrlhqo8oud2q" path="res://assets/Lucid-V1.2/Music-1.png" id="3_2ctot"]
+[ext_resource type="Texture2D" path="res://assets/Exit.png" id="4_jrqig"]
+[ext_resource type="Texture2D" uid="uid://i5lc0k26sxo3" path="res://assets/Lucid-V1.2/Home.png" id="5_n0fy7"]
+[ext_resource type="Texture2D" uid="uid://0ruj5wpsonyi" path="res://assets/Lucid-V1.2/Power.png" id="6_jpbdv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_owc20"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_puhno"]
+device = -1
+keycode = 4194342
+
+[sub_resource type="Shortcut" id="Shortcut_75x6d"]
+events = [SubResource("InputEventKey_puhno")]
+
 [node name="SettingsMenu" type="Control" unique_id=1153598029]
 layout_mode = 3
 anchors_preset = 15
@@ -7,3 +25,125 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=72709817]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1817101827]
+layout_mode = 2
+text = "ui_settings"
+label_settings = SubResource("LabelSettings_owc20")
+horizontal_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer" unique_id=1475848423]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="VBoxContainer/PanelContainer" unique_id=825253156]
+layout_mode = 2
+current_tab = 0
+tabs_position = 1
+tab_0/title = "ui_language"
+tab_0/icon = ExtResource("1_n35ux")
+tab_1/title = "ui_screen"
+tab_1/icon = ExtResource("2_fb6cq")
+tab_2/title = "ui_audio"
+tab_2/icon = ExtResource("3_2ctot")
+tab_3/title = "ui_exit_multiplayer"
+tab_3/icon = ExtResource("4_jrqig")
+tab_3/hidden = true
+tab_4/title = "ui_back_to_menu"
+tab_4/icon = ExtResource("5_n0fy7")
+tab_4/hidden = true
+tab_5/title = "ui_close_game"
+tab_5/icon = ExtResource("6_jpbdv")
+tab_5/hidden = true
+
+[node name="language_settings" type="Control" parent="VBoxContainer/PanelContainer/TabContainer" unique_id=1968950381]
+layout_mode = 2
+metadata/_tab_index = 0
+metadata/_tab_name = "ui_language"
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/PanelContainer/TabContainer/language_settings" unique_id=108689773]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ItemList" type="ItemList" parent="VBoxContainer/PanelContainer/TabContainer/language_settings/CenterContainer" unique_id=615416437]
+custom_minimum_size = Vector2(115, 70)
+layout_mode = 2
+item_count = 2
+item_0/text = "Español"
+item_0/icon = ExtResource("1_cr101")
+item_1/text = "English"
+item_1/icon = ExtResource("2_wswnh")
+
+[node name="screen_settings" type="VBoxContainer" parent="VBoxContainer/PanelContainer/TabContainer" unique_id=300399517]
+visible = false
+layout_mode = 2
+alignment = 1
+metadata/_tab_index = 1
+metadata/_tab_name = "ui_screen"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/TabContainer/screen_settings" unique_id=351651702]
+layout_mode = 2
+
+[node name="fullscreen" type="HBoxContainer" parent="VBoxContainer/PanelContainer/TabContainer/screen_settings/HBoxContainer" unique_id=1601781117]
+custom_minimum_size = Vector2(212, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/PanelContainer/TabContainer/screen_settings/HBoxContainer/fullscreen" unique_id=607525252]
+layout_mode = 2
+size_flags_horizontal = 3
+shortcut = SubResource("Shortcut_75x6d")
+text = "ui_fullscreen"
+alignment = 2
+
+[node name="audio_settings" type="VBoxContainer" parent="VBoxContainer/PanelContainer/TabContainer" unique_id=2104753935]
+visible = false
+layout_mode = 2
+alignment = 1
+metadata/_tab_index = 2
+metadata/_tab_name = "ui_audio"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/TabContainer/audio_settings" unique_id=1468558918]
+layout_mode = 2
+
+[node name="fullscreen" type="HBoxContainer" parent="VBoxContainer/PanelContainer/TabContainer/audio_settings/HBoxContainer" unique_id=441873110]
+custom_minimum_size = Vector2(212, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/PanelContainer/TabContainer/audio_settings/HBoxContainer/fullscreen" unique_id=1698178664]
+layout_mode = 2
+size_flags_horizontal = 3
+shortcut = SubResource("Shortcut_75x6d")
+text = "ui_fullscreen"
+alignment = 2
+
+[node name="exit_multi" type="Button" parent="VBoxContainer/PanelContainer/TabContainer" unique_id=222877267]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+metadata/_tab_name = "ui_exit_multiplayer"
+
+[node name="go_menu" type="Button" parent="VBoxContainer/PanelContainer/TabContainer" unique_id=1235983794]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+metadata/_tab_name = "ui_back_to_menu"
+
+[node name="exit_game" type="Button" parent="VBoxContainer/PanelContainer/TabContainer" unique_id=408885834]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 5
+metadata/_tab_name = "ui_close_game"
