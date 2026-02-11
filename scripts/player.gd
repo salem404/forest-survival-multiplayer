@@ -4,8 +4,9 @@ extends CharacterBody2D
 const SPEED: float = 200.0
 const MAXLIFE: float = 100.0
 
-var player_layers: Array[int] = [1, 2, 4, 8]
-var collision_masks: Array[int] = [238, 221, 187, 119]
+const SYNC_INTERVAL: float = 0.01
+const REMOTE_SMOOTH_SPEED: float = 14.0
+const PLAYER_LAYER_MASK: int = 1 | 2 | 4 | 8
 
 @export var index: int
 @export var player_alive: bool = true
@@ -13,15 +14,22 @@ var collision_masks: Array[int] = [238, 221, 187, 119]
 @export var player_color: Color = Color.WHITE
 @export var player_name: String = "Player"
 
+var player_layers: Array[int] = [1, 2, 4, 8]
+var collision_masks: Array[int] = [238, 221, 187, 119]
+
 var last_synced_position: Vector2 = Vector2.ZERO
 var last_synced_moving: bool = false
 var last_synced_flip: bool = false
+var last_synced_animation: String = "idleFront"
 var sync_timer: float = 0.0
-const SYNC_INTERVAL: float = 0.01
-
+var last_facing: Vector2 = Vector2(0, 1)
 var remote_target_position: Vector2 = Vector2.ZERO
 var remote_has_target: bool = false
-const REMOTE_SMOOTH_SPEED: float = 14.0
+
+@onready var animation_tree: AnimationTree = $AnimationTree
+@onready var camera: Camera2D = $Camera2D
+@onready var player_sprite: Sprite2D = $Sprite2D
+@onready var nickname_label: Label = $NicknameLabel
 
 
 func _enter_tree() -> void:
@@ -35,13 +43,13 @@ func _ready() -> void:
 	collision_mask = collision_masks[index]
 
 	if _is_local_authority():
-		$Camera2D.enabled = true
+		camera.enabled = true
 	else:
-		$Camera2D.enabled = false
+		camera.enabled = false
 		set_physics_process(false)
 
-	$AnimatedSprite2D.self_modulate = player_color
-	$NicknameLabel.text = player_name
+	player_sprite.self_modulate = player_color
+	nickname_label.text = player_name
 
 	call_deferred("_check_player_count")
 
@@ -67,15 +75,15 @@ func _physics_process(_delta: float) -> void:
 		var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		velocity = direction * SPEED
 		var is_moving = direction != Vector2.ZERO
-		var flip_h = direction.x > 0 if is_moving else $AnimatedSprite2D.flip_h
+		var flip_h = direction.x > 0 if is_moving else player_sprite.flip_h
 
 		if is_moving:
-			$AnimatedSprite2D.play()
-			$AnimatedSprite2D.animation = "default"
-			$AnimatedSprite2D.flip_h = flip_h
+			last_facing = direction.normalized()
+			_update_blend_positions(last_facing)
 		else:
-			$AnimatedSprite2D.animation = "default" # "idle"
-			$AnimatedSprite2D.play()
+			_update_blend_positions(last_facing)
+
+		player_sprite.flip_h = flip_h
 
 	move_and_slide()
 
@@ -83,35 +91,49 @@ func _physics_process(_delta: float) -> void:
 	if sync_timer >= SYNC_INTERVAL:
 		sync_timer = 0.0
 		var is_moving = velocity != Vector2.ZERO
-		var flip_h = $AnimatedSprite2D.flip_h
+		var flip_h = player_sprite.flip_h
 
 		var position_changed = global_position != last_synced_position
 		var moving_changed = is_moving != last_synced_moving
 		var flip_changed = flip_h != last_synced_flip
+
 		if position_changed or moving_changed or flip_changed:
 			if _is_singleplayer():
 				_update_last_synced(global_position, is_moving, flip_h)
 				return
-			sync_movement.rpc(global_position, is_moving, flip_h)
+			var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+			sync_movement.rpc(global_position, is_moving, flip_h, direction)
 			_update_last_synced(global_position, is_moving, flip_h)
 
 
-func _apply_remote_state(_position: Vector2, _is_moving: bool, _flip_h: bool) -> void:
+func _update_blend_positions(direction: Vector2) -> void:
+	animation_tree.set("parameters/Walk/blend_position", direction)
+	animation_tree.set("parameters/Idle/blend_position", direction)
+
+
+func _apply_remote_state(
+		_position: Vector2,
+		_is_moving: bool,
+		_flip_h: bool,
+		_direction: Vector2,
+) -> void:
 	remote_target_position = _position
 	remote_has_target = true
-	if _is_moving:
-		$AnimatedSprite2D.animation = "default" # "run"
+	# Update animation tree blend position for remote players
+	if _direction != Vector2.ZERO:
+		last_facing = _direction.normalized()
 	else:
-		$AnimatedSprite2D.animation = "default"
-	$AnimatedSprite2D.flip_h = _flip_h
-	$AnimatedSprite2D.play()
+		# Use last_facing if direction is zero
+		_direction = last_facing
+	_update_blend_positions(_direction)
+	player_sprite.flip_h = _flip_h
 
 
 @rpc("any_peer", "call_remote", "unreliable")
-func sync_movement(_position: Vector2, _is_moving: bool, _flip_h: bool):
+func sync_movement(_position: Vector2, _is_moving: bool, _flip_h: bool, _direction: Vector2):
 	if _is_local_authority():
 		return
-	call_deferred("_apply_remote_state", _position, _is_moving, _flip_h)
+	call_deferred("_apply_remote_state", _position, _is_moving, _flip_h, _direction)
 
 
 func _process(_delta: float) -> void:
@@ -135,11 +157,13 @@ func set_index(_index):
 	collision_layer = player_layers[index]
 	collision_mask = collision_masks[index]
 
+
 @rpc("any_peer", "call_local", "reliable")
 func heal(amount: float) -> void:
 	current_life = min(current_life + amount, MAXLIFE)
 
+
 func _check_player_count() -> void:
 	var peer_count = multiplayer.get_peers().size() + 1 # +1 for self
 	if peer_count == 1:
-		$NicknameLabel.hide()
+		nickname_label.hide()

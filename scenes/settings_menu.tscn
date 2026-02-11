@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://byyngbmk7vwob"]
 
 [ext_resource type="Texture2D" uid="uid://cgiptu75uqmt7" path="res://assets/Snoblin_Flags_of_Europe/Spain.png" id="1_cr101"]
-[ext_resource type="Texture2D" path="res://assets/Asperand-Sign.png" id="1_n35ux"]
-[ext_resource type="Texture2D" path="res://assets/CD.png" id="2_fb6cq"]
+[ext_resource type="Texture2D" uid="uid://c0mmcku87j31" path="res://assets/Lucid-V1.2/Asperand-Sign.png" id="1_n35ux"]
+[ext_resource type="Texture2D" uid="uid://cgwtulwsnn186" path="res://assets/Lucid-V1.2/CD.png" id="2_fb6cq"]
 [ext_resource type="Texture2D" uid="uid://dydrj2x0xv5wb" path="res://assets/Snoblin_Flags_of_Europe/United_Kingdom.png" id="2_wswnh"]
 [ext_resource type="Texture2D" uid="uid://drrlhqo8oud2q" path="res://assets/Lucid-V1.2/Music-1.png" id="3_2ctot"]
-[ext_resource type="Texture2D" path="res://assets/Exit.png" id="4_jrqig"]
+[ext_resource type="Texture2D" uid="uid://bxqv16augveib" path="res://assets/Lucid-V1.2/Exit.png" id="4_jrqig"]
 [ext_resource type="Texture2D" uid="uid://i5lc0k26sxo3" path="res://assets/Lucid-V1.2/Home.png" id="5_n0fy7"]
 [ext_resource type="Texture2D" uid="uid://0ruj5wpsonyi" path="res://assets/Lucid-V1.2/Power.png" id="6_jpbdv"]
 

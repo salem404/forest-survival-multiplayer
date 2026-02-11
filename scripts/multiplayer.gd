@@ -74,6 +74,9 @@ func _input(event):
 func _on_player_connected(id, player_info):
 	if not player_info_list:
 		return
+	for child in player_list.get_children():
+		if child.has_method("get") and child.get("id") == id:
+			return
 	lobby_full_recent = false
 	_set_player_custom_enabled(false)
 	var info_list = player_info_list.instantiate()
@@ -191,6 +194,8 @@ func _on_client_button_pressed() -> void:
 	if connection_type == "Steam":
 		SteamLobby.join_game(lobbyinput.text.to_int())
 	else:
+		if not LANLobby.initialized:
+			LANLobby.init()
 		var address = ipinput.text if ipinput.text else LANLobby.DEFAULT_SERVER_IP
 		var port = portinput.text.to_int() if portinput.text else LANLobby.DEFAULT_PORT
 		LANLobby.join_game(address, port)
@@ -267,7 +272,9 @@ func _on_server_disconnected():
 		_set_player_custom_enabled(true)
 		_clear_player_list()
 		return
-	%GameManager.swap_scene_to_file("res://scenes/main_menu.tscn")
+	var game_manager = get_tree().root.find_child("GameManager", true, false)
+	if game_manager:
+		game_manager.swap_scene_to_file("res://scenes/main_menu.tscn")
 
 
 func _required_data() -> bool:
