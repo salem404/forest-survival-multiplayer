@@ -272,7 +272,9 @@ func _on_server_disconnected():
 		_set_player_custom_enabled(true)
 		_clear_player_list()
 		return
-	%GameManager.swap_scene_to_file("res://scenes/main_menu.tscn")
+	var game_manager = get_tree().root.find_child("GameManager", true, false)
+	if game_manager:
+		game_manager.swap_scene_to_file("res://scenes/main_menu.tscn")
 
 
 func _required_data() -> bool:
