@@ -1,7 +1,7 @@
 class_name Player
 extends CharacterBody2D
 
-const SPEED: float = 200.0
+const SPEED: float = 80.0
 const MAXLIFE: float = 100.0
 
 const SYNC_INTERVAL: float = 0.01
@@ -80,7 +80,10 @@ func _physics_process(_delta: float) -> void:
 		if is_moving:
 			last_facing = direction.normalized()
 			_update_blend_positions(last_facing)
+			animation_tree.get("parameters/playback").travel("Walk")
+			last_synced_animation = "Walk"
 		else:
+			animation_tree.get("parameters/playback").travel("Idle")
 			_update_blend_positions(last_facing)
 
 		player_sprite.flip_h = flip_h

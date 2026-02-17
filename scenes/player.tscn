@@ -252,7 +252,7 @@ tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.3, 0.6, 0.9),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
+"update": 1,
 "values": [12, 13, 14, 15]
 }
 tracks/1/type = "value"
@@ -311,28 +311,7 @@ _data = {
 &"walkSide": SubResource("Animation_d2wvv")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_g2els"]
-animation = &"walkSide"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qhqgy"]
-animation = &"walkSide"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dqkch"]
-animation = &"walkBack"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qlg0r"]
-animation = &"walkFront"
-
-[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_tuyoq"]
-blend_point_0/node = SubResource("AnimationNodeAnimation_g2els")
-blend_point_0/pos = Vector2(-1, 0)
-blend_point_1/node = SubResource("AnimationNodeAnimation_qhqgy")
-blend_point_1/pos = Vector2(1, 0)
-blend_point_2/node = SubResource("AnimationNodeAnimation_dqkch")
-blend_point_2/pos = Vector2(0, 1)
-blend_point_3/node = SubResource("AnimationNodeAnimation_qlg0r")
-blend_point_3/pos = Vector2(0, -1)
-blend_mode = 1
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_g2els"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fjrip"]
 animation = &"idleFront"
@@ -357,38 +336,57 @@ blend_point_3/node = SubResource("AnimationNodeAnimation_y4r1p")
 blend_point_3/pos = Vector2(-0.5, 0)
 blend_mode = 1
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3v2ag"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_g2els"]
+animation = &"walkSide"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qhqgy"]
+animation = &"walkSide"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dqkch"]
+animation = &"walkBack"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qlg0r"]
+animation = &"walkFront"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_tuyoq"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_g2els")
+blend_point_0/pos = Vector2(-1, 0)
+blend_point_1/node = SubResource("AnimationNodeAnimation_qhqgy")
+blend_point_1/pos = Vector2(1, 0)
+blend_point_2/node = SubResource("AnimationNodeAnimation_dqkch")
+blend_point_2/pos = Vector2(0, -1)
+blend_point_3/node = SubResource("AnimationNodeAnimation_qlg0r")
+blend_point_3/pos = Vector2(0, 1)
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tuyoq"]
 animation = &"emoteFront"
-advance_on_start = true
-use_custom_timeline = true
-timeline_length = 1.0
-stretch_time_scale = false
-start_offset = 0.0
-loop_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jej6c"]
 advance_mode = 2
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_f1ej7"]
-break_loop_at_end = true
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_oprun"]
-reset = false
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_a8ls1"]
 advance_mode = 0
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fjrip"]
+advance_condition = &"is_moving"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_smehm"]
+advance_condition = &"!is_moving"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ur7pv"]
-states/BlendSpace2D/node = SubResource("AnimationNodeBlendSpace2D_tuyoq")
-states/BlendSpace2D/position = Vector2(404.57852, 250.13507)
+states/Attack/node = SubResource("AnimationNodeBlendSpace2D_g2els")
+states/Attack/position = Vector2(479.82852, 227.69756)
 states/End/position = Vector2(511.5, 119.06876)
 states/Idle/node = SubResource("AnimationNodeBlendSpace2D_d2wvv")
-states/Idle/position = Vector2(345.80237, 132.22504)
-states/Start/position = Vector2(171, 101.34572)
-states/emoteFront/node = SubResource("AnimationNodeAnimation_3v2ag")
-states/emoteFront/position = Vector2(193.0823, 277.53754)
-transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_jej6c"), "Idle", "emoteFront", SubResource("AnimationNodeStateMachineTransition_f1ej7"), "emoteFront", "Idle", SubResource("AnimationNodeStateMachineTransition_oprun"), "Idle", "End", SubResource("AnimationNodeStateMachineTransition_a8ls1")]
-graph_offset = Vector2(-25.921467, 22.635067)
+states/Idle/position = Vector2(340.80237, 93.22504)
+states/Start/position = Vector2(153.5, 163.84572)
+states/Walk/node = SubResource("AnimationNodeBlendSpace2D_tuyoq")
+states/Walk/position = Vector2(334.07852, 212.63507)
+states/emoteFront/node = SubResource("AnimationNodeAnimation_tuyoq")
+states/emoteFront/position = Vector2(357.32855, 318.69757)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_jej6c"), "Idle", "End", SubResource("AnimationNodeStateMachineTransition_a8ls1"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_fjrip"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_smehm")]
+graph_offset = Vector2(36.328533, 50.197556)
 
 [node name="Player" type="CharacterBody2D" unique_id=2102833124]
 y_sort_enabled = true
@@ -428,8 +426,11 @@ autoplay = &"idleFront"
 root_node = NodePath(".")
 tree_root = SubResource("AnimationNodeStateMachine_ur7pv")
 anim_player = NodePath("../AnimationPlayer")
-parameters/BlendSpace2D/blend_position = Vector2(0.0018326044, 0.42152464)
+parameters/conditions/!is_moving = false
+parameters/conditions/is_moving = false
+parameters/Attack/blend_position = Vector2(0, 0)
 parameters/Idle/blend_position = Vector2(0, 1)
+parameters/Walk/blend_position = Vector2(0.0018326044, 0.42152464)
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="." unique_id=1125773024]
 position = Vector2(0, -18)
